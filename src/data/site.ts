@@ -11,19 +11,15 @@ import plumberShot from "~/assets/work/plumber.png";
 import shopShot from "~/assets/work/shop.png";
 
 /**
- * ⚠️ FILL THIS IN BEFORE YOU DEPLOY. ⚠️
+ * WhatsApp number in full international format: country code first, digits
+ * only — no "+", no spaces, no dashes, no leading zero.
+ *   +98 912 936 8785  ->  "989129368785"
  *
- * Your WhatsApp number in full international format: country code first,
- * digits only — no "+", no spaces, no dashes, no leading zero.
- *   e.g. UK  07700 900123  ->  "447700900123"
- *        US  (415) 555-0132 -> "14155550132"
- *        IR  0912 345 6789  -> "989123456789"
- *
- * While this is left as PLACEHOLDER every WhatsApp button on the site turns
- * itself into a visible warning instead of a dead link, so you cannot ship it
- * broken by accident.
+ * Set it back to "PLACEHOLDER" (or anything that isn't 8-15 digits) and every
+ * WhatsApp button turns itself into a visible warning rather than a dead link,
+ * so the site can't go live half-configured.
  */
-export const WHATSAPP_NUMBER = "PLACEHOLDER";
+export const WHATSAPP_NUMBER = "989129368785";
 
 /** Pre-filled first message, so a stranger never faces an empty text box. */
 export const WHATSAPP_MESSAGE =
@@ -190,7 +186,7 @@ export const tiers: readonly Tier[] = [
 ] as const;
 
 export const pricingNote =
-  "All packages: 50% deposit to start, 50% on delivery.";
+  "All prices in Canadian dollars. All packages: 50% deposit to start, 50% on delivery.";
 
 /* ── 4. How it works ────────────────────────────────────────────────────── */
 
