@@ -10,26 +10,6 @@ be the proof that I can build a fast one.
 
 ---
 
-## Before you deploy — one thing to fill in
-
-Open [`src/data/site.ts`](src/data/site.ts) and set your WhatsApp number:
-
-```ts
-export const WHATSAPP_NUMBER = "447700900123"; // country code first, digits only
-```
-
-Until you do, every WhatsApp button renders as a visible warning instead of a
-dead link, so a half-configured site can't quietly go live.
-
-Then set your real domain in [`astro.config.mjs`](astro.config.mjs) so canonical
-URLs point at the right place:
-
-```js
-site: "https://your-domain.pages.dev",
-```
-
----
-
 ## Running it
 
 ```bash
@@ -133,22 +113,43 @@ better under white text; if you re-tint anything, keep it there.
 
 ---
 
-## Deploying to Cloudflare Pages
+## Deploying
 
-1. Push this repo to GitHub.
-2. In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**.
-3. Pick the repo and use these settings:
+The site is published to **GitHub Pages** from this repo, at
+<https://mosqobadi.github.io>.
 
-   | Setting                | Value        |
-   | ---------------------- | ------------ |
-   | Framework preset       | Astro        |
-   | Build command          | `pnpm build` |
-   | Build output directory | `dist`       |
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) does the whole
+thing: every push to `main` builds with Astro and publishes `dist/`. There is
+nothing to run by hand and no `dist/` committed to the repo.
 
-4. Deploy. Every push to `main` rebuilds automatically.
+**One-time setup** (already done, but here's what it was):
+**Settings → Pages → Build and deployment → Source: GitHub Actions.** Not
+"Deploy from a branch" — that option would try to serve the un-built source.
 
-`public/_headers` is picked up by Cloudflare on deploy — it sets the security
-headers and caches hashed assets forever while leaving HTML uncached.
+To check on a deploy, or to re-publish without making a commit, use the
+**Actions** tab.
 
-Custom domain: **Pages project → Custom domains → Set up a domain**. Update
-`site` in `astro.config.mjs` to match, and redeploy.
+### Two things GitHub Pages does not do
+
+- **No custom headers.** `_headers` is a Cloudflare Pages feature and was
+  removed, because a file that silently does nothing is worse than not having
+  it. The security headers and the immutable caching for `/_astro/*` are lost;
+  Pages applies its own short cache to everything instead. Nothing on this site
+  depends on them.
+- **`public/.nojekyll`** exists so nothing ever tries to run the output through
+  Jekyll, which ignores directories beginning with an underscore and would eat
+  `/_astro/`.
+
+### Custom domain
+
+**Settings → Pages → Custom domain.** Add the domain, let GitHub write the
+`CNAME` file, then change `site` in [`astro.config.mjs`](astro.config.mjs) to
+match so canonical URLs follow, and push.
+
+### If the repo is ever renamed
+
+`MosQobadi.github.io` is served at the account root, which is why there is no
+`base` in the Astro config. Rename the repo and the site moves to
+`https://mosqobadi.github.io/<repo>/`, at which point every internal link —
+`/demos/restaurant/`, `/#work`, the favicon — needs to go through
+`import.meta.env.BASE_URL`. Renaming is not a free action.

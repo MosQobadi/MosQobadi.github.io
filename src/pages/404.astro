@@ -1,0 +1,57 @@
+---
+/**
+ * GitHub Pages serves this for any path it can't find. Without it you get
+ * GitHub's own stark error page, with its logo on it, on a site meant to be
+ * selling your work.
+ */
+import Base from "~/layouts/Base.astro";
+import Header from "~/components/Header.astro";
+import Footer from "~/components/Footer.astro";
+import WhatsAppButton from "~/components/WhatsAppButton.astro";
+---
+
+<Base
+  title="Page not found — Mostafa Qobadi"
+  description="That page doesn't exist. Head back to the homepage to see the work and the prices."
+  noindex
+>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <Header />
+
+  <main
+    id="main"
+    class="mx-auto max-w-2xl px-5 py-24 text-center sm:px-8 sm:py-32"
+  >
+    <p class="text-accent text-sm font-bold tracking-[0.2em] uppercase">
+      Page not found
+    </p>
+
+    <h1 class="mt-5 text-4xl font-bold sm:text-5xl">That page isn't here.</h1>
+
+    <p class="text-muted mt-5 text-lg">
+      It may have been moved or the link may have a typo in it. Everything — the
+      work, the prices, how it all works — is on the homepage.
+    </p>
+
+    <div class="mt-9 flex flex-wrap justify-center gap-3">
+      <a
+        href="/"
+        class="bg-accent hover:bg-accent-bright rounded-full px-7 py-4 font-semibold text-white transition-colors"
+      >
+        Back to the homepage
+      </a>
+      <a
+        href="/#work"
+        class="border-line-strong hover:border-accent rounded-full border px-7 py-4 font-semibold transition-colors"
+      >
+        See the work
+      </a>
+    </div>
+
+    <div class="mt-12 flex justify-center">
+      <WhatsAppButton label="Or just message me" size="md" />
+    </div>
+  </main>
+
+  <Footer />
+</Base>

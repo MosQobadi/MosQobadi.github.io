@@ -1,0 +1,49 @@
+name: Deploy to GitHub Pages
+
+# Every push to main rebuilds and publishes. `workflow_dispatch` lets you
+# re-run it by hand from the Actions tab without making a commit.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# The minimum GitHub Pages needs: read the repo, write a Pages deployment, and
+# mint an OIDC token to prove the deployment came from this workflow.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time. `cancel-in-progress: false` so a run that is already
+# publishing is allowed to finish rather than leaving the site half-swapped.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Installs pnpm from the lockfile, runs `astro build`, and uploads dist/
+      # as the Pages artifact. Node 22 because Astro 7 requires >=22.12.
+      - name: Build with Astro
+        uses: withastro/action@v3
+        with:
+          node-version: 22
+          package-manager: pnpm@latest
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
