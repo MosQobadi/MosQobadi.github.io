@@ -590,7 +590,16 @@ const nav = [
   const dateInput = document.getElementById(
     "bk-date",
   ) as HTMLInputElement | null;
-  if (dateInput) dateInput.min = new Date().toISOString().slice(0, 10);
+  /* Built from local parts, not toISOString() — that returns UTC, which after
+     about 9pm UK time would offer the diner a table yesterday. */
+  if (dateInput) {
+    const today = new Date();
+    dateInput.min = [
+      today.getFullYear(),
+      String(today.getMonth() + 1).padStart(2, "0"),
+      String(today.getDate()).padStart(2, "0"),
+    ].join("-");
+  }
 
   form?.addEventListener("submit", (event) => {
     event.preventDefault();

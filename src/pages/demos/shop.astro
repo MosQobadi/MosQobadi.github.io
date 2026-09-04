@@ -40,7 +40,7 @@ const shop = {
         <button
           type="button"
           id="cart-open"
-          class="border-shop-line hover:border-shop-accent inline-flex items-center gap-2 rounded-full border bg-white px-4 py-2.5 text-sm font-semibold"
+          class="border-shop-line hover:border-shop-accent inline-flex min-h-11 items-center gap-2 rounded-full border bg-white px-4 py-2.5 text-sm font-semibold"
         >
           <svg
             aria-hidden="true"
@@ -66,7 +66,7 @@ const shop = {
   <main id="main">
     <!-- Hero -->
     <section id="top" class="border-shop-line bg-shop-sunk border-b">
-      <div class="mx-auto max-w-6xl px-5 py-16 sm:py-20">
+      <div class="mx-auto max-w-6xl px-5 py-12 sm:py-16">
         <p
           class="text-shop-accent text-sm font-semibold tracking-[0.2em] uppercase"
         >
@@ -92,14 +92,15 @@ const shop = {
               d="M3 5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1h2.4a1 1 0 0 1 .8.4l1.6 2.13a1 1 0 0 1 .2.6V13a1 1 0 0 1-1 1h-1a2.5 2.5 0 0 1-5 0H8a2.5 2.5 0 0 1-5 0 1 1 0 0 1-1-1V5Zm10 3v3h4V9.47L15.9 8H13Z"
             ></path>
           </svg>
-          Free local delivery over {formatPrice(FREE_DELIVERY_OVER_PENCE)} · otherwise
-          {formatPrice(DELIVERY_PENCE)}
+          {
+            `Free local delivery over ${formatPrice(FREE_DELIVERY_OVER_PENCE)} · otherwise ${formatPrice(DELIVERY_PENCE)}`
+          }
         </p>
       </div>
     </section>
 
     <!-- Product grid -->
-    <section id="shop" class="py-16">
+    <section id="shop" class="scroll-mt-32 py-16">
       <div class="mx-auto max-w-6xl px-5">
         <div
           class="border-shop-line flex flex-wrap items-end justify-between gap-5 border-b pb-5"
@@ -115,7 +116,7 @@ const shop = {
               categories.map((category, index) => (
                 <button
                   type="button"
-                  class="filter-btn border-shop-line hover:border-shop-accent aria-pressed:border-shop-accent aria-pressed:bg-shop-accent rounded-full border px-4 py-2 text-sm font-semibold aria-pressed:text-white"
+                  class="filter-btn border-shop-line hover:border-shop-accent aria-pressed:border-shop-accent aria-pressed:bg-shop-accent min-h-11 rounded-full border px-4 py-2 text-sm font-semibold aria-pressed:text-white"
                   data-filter={category.value}
                   aria-pressed={index === 0 ? "true" : "false"}
                 >
@@ -160,7 +161,7 @@ const shop = {
                       </span>
                       <button
                         type="button"
-                        class="add-to-cart bg-shop-accent rounded-full px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+                        class="add-to-cart bg-shop-accent min-h-11 rounded-full px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
                         data-id={product.id}
                       >
                         Add to basket

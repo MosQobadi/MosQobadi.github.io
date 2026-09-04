@@ -1,5 +1,5 @@
 ---
-import { site } from "~/data/site";
+import { site, whatsappConfigured } from "~/data/site";
 import WhatsAppButton from "./WhatsAppButton.astro";
 
 const links = [
@@ -35,11 +35,17 @@ const links = [
           </a>
         ))
       }
-      <WhatsAppButton
-        label="Message me"
-        size="md"
-        class="ml-1 hidden md:inline-flex"
-      />
+      {
+        /* The unconfigured warning is loud by design, but it would blow the
+           header apart — the hero and the closing band already carry it. */
+        whatsappConfigured && (
+          <WhatsAppButton
+            label="Message me"
+            size="md"
+            class="ml-1 hidden md:inline-flex"
+          />
+        )
+      }
     </nav>
   </div>
 </header>

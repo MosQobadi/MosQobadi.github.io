@@ -30,22 +30,32 @@ const leafSets: Record<string, number[][]> = {
     [22, 40, 22, 32, 15],
     [0, 22, 0, 30, 16],
   ],
+  /* Snake plant: upright blades, so the radii are tall-and-narrow. */
   tall: [
-    [-20, 70, -10, 62, 12],
-    [0, 58, 0, 74, 13],
-    [20, 72, 10, 60, 12],
-    [-34, 92, -20, 44, 10],
-    [34, 92, 20, 44, 10],
+    [-22, 92, -12, 11, 46],
+    [0, 80, 0, 12, 56],
+    [22, 92, 12, 11, 46],
+    [-40, 106, -24, 9, 34],
+    [40, 106, 24, 9, 34],
   ],
+  /* String of hearts: the strands hang down OUTSIDE the pot (x 64-136), or
+     they read as a bush rather than something trailing off a shelf. */
   trailing: [
-    [-46, 60, -74, 26, 12],
-    [-34, 88, -62, 24, 11],
-    [-18, 112, -40, 22, 10],
-    [46, 60, 74, 26, 12],
-    [34, 88, 62, 24, 11],
-    [18, 112, 40, 22, 10],
-    [0, 44, 0, 28, 14],
+    [-52, 98, -68, 20, 9],
+    [-62, 130, -80, 18, 8],
+    [-66, 162, -88, 16, 7],
+    [52, 98, 68, 20, 9],
+    [62, 130, 80, 18, 8],
+    [66, 162, 88, 16, 7],
+    [0, 106, 0, 22, 12],
   ],
+};
+
+/** Where each plant's stem stops. A trailing plant barely has one. */
+const stemTop: Record<string, number> = {
+  leafy: 40,
+  tall: 62,
+  trailing: 104,
 };
 
 const rosette = [
@@ -80,7 +90,7 @@ const rosette = [
     (variant === "leafy" || variant === "tall" || variant === "trailing") && (
       <g>
         <path
-          d={`M100 148 L100 ${variant === "tall" ? 60 : 40}`}
+          d={`M100 148 L100 ${stemTop[variant]}`}
           stroke={tint}
           stroke-width="4"
           stroke-linecap="round"

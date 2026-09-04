@@ -89,9 +89,11 @@ export const workSamples: readonly WorkSample[] = [
     problem:
       "A motor-oil retailer whose customers didn't know which oil fits their car — so the site asks for the car and shows only what fits.",
     href: "https://topoil.ir",
+    // TODO: topoil.ir wouldn't load from the build machine, so this card shows a
+    // placeholder. Run `pnpm thumbnails topoil` from a machine that can reach the
+    // site, then rewrite imageAlt below to describe the real screenshot.
     image: topoilShot,
-    imageAlt:
-      "The Top Oil shop homepage, showing a car-lookup panel above a grid of engine oil products.",
+    imageAlt: "Top Oil — the live shop at topoil.ir.",
     isDemo: false,
     features: ["Online shop", "Car lookup", "Two languages", "Admin panel"],
   },
