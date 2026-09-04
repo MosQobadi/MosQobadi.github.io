@@ -28,13 +28,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Installs pnpm from the lockfile, runs `astro build`, and uploads dist/
-      # as the Pages artifact. Node 22 because Astro 7 requires >=22.12.
+      # Installs, runs `astro build`, and uploads dist/ as the Pages artifact.
+      #
+      # Node 22 because Astro 7 requires >=22.12.
+      #
+      # The pnpm version is deliberately NOT pinned here — it comes from the
+      # `packageManager` field in package.json, so CI and a laptop can't drift.
+      # This used to say `pnpm@latest`, which resolved to pnpm 11 and failed:
+      # pnpm 11 enforces a minimum-release-age supply-chain policy and rejected
+      # a transitive dependency that had been published hours earlier. The
+      # lockfile was fine; the package manager reading it was not the one that
+      # wrote it.
       - name: Build with Astro
         uses: withastro/action@v3
         with:
           node-version: 22
-          package-manager: pnpm@latest
 
   deploy:
     name: Deploy
