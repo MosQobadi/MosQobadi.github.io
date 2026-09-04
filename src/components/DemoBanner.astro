@@ -1,0 +1,35 @@
+---
+interface Props {
+  /** The made-up business this demo is pretending to be. */
+  business: string;
+}
+
+const { business } = Astro.props;
+---
+
+<!--
+  Sits above every demo so nobody can land mid-page from a shared link and
+  mistake the demo for a real business. Also the way back to the portfolio.
+  Each demo stacks this and its own header inside one sticky wrapper, so the
+  bar never has to guess the other one's height.
+-->
+<div class="bg-fg text-paper px-4 py-2 text-[0.8125rem]">
+  <div
+    class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center sm:justify-between sm:text-left"
+  >
+    <p>
+      <span aria-hidden="true">🛈</span>
+      <strong class="font-semibold">Demo site.</strong>
+      <span class="opacity-80">
+        {business} isn't a real business — this was built to show what a site like
+        it looks like.
+      </span>
+    </p>
+    <a
+      href="/#work"
+      class="shrink-0 font-semibold underline underline-offset-4 hover:no-underline"
+    >
+      ← Back to portfolio
+    </a>
+  </div>
+</div>

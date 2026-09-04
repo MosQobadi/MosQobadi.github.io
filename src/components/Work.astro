@@ -1,0 +1,105 @@
+---
+import { Image } from "astro:assets";
+import { workSamples } from "~/data/site";
+---
+
+<section id="work" class="border-line scroll-mt-24 border-b py-20 sm:py-24">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <h2 class="text-3xl font-bold sm:text-4xl">Recent work</h2>
+    <p class="text-muted mt-3 max-w-2xl text-lg">
+      One live client site, and three I built myself to show what each kind of
+      business site looks like. Every one of them opens — have a click around.
+    </p>
+
+    <ul class="mt-12 grid gap-8 sm:grid-cols-2">
+      {
+        workSamples.map((sample) => {
+          const external = sample.href.startsWith("http");
+          return (
+            <li>
+              <a
+                href={sample.href}
+                target={external ? "_blank" : null}
+                rel={external ? "noopener" : null}
+                class="group border-line bg-surface hover:border-line-strong flex h-full flex-col overflow-hidden rounded-[14px] border transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/5"
+              >
+                <div class="border-line bg-sunk overflow-hidden border-b">
+                  <Image
+                    src={sample.image}
+                    alt={sample.imageAlt}
+                    widths={[480, 800, 1200]}
+                    sizes="(min-width: 640px) 40vw, 92vw"
+                    class="aspect-[8/5] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                    loading="lazy"
+                  />
+                </div>
+
+                <div class="flex flex-1 flex-col p-6">
+                  <div class="flex flex-wrap items-center gap-3">
+                    <h3 class="text-xl font-semibold">{sample.name}</h3>
+                    {sample.isDemo ? (
+                      <span class="border-line-strong text-subtle rounded-full border px-2.5 py-1 text-[0.7rem] font-semibold tracking-wide uppercase">
+                        Demo I built
+                      </span>
+                    ) : (
+                      <span class="bg-accent-wash text-accent rounded-full px-2.5 py-1 text-[0.7rem] font-semibold tracking-wide uppercase">
+                        Live client site
+                      </span>
+                    )}
+                  </div>
+
+                  <p class="text-muted mt-3">{sample.problem}</p>
+
+                  <ul class="mt-5 flex flex-wrap gap-2">
+                    {sample.features.map((feature) => (
+                      <li class="bg-sunk text-muted rounded-md px-2.5 py-1 text-[0.8125rem]">
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <span class="text-accent mt-6 inline-flex items-center gap-1.5 font-semibold">
+                    {external ? "Visit the live site" : "Open the demo"}
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      class="h-4 w-4 transition-transform group-hover:translate-x-1"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M3 10a.75.75 0 0 1 .75-.75h10.19L10.7 6.28a.75.75 0 1 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l3.24-2.97H3.75A.75.75 0 0 1 3 10Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                </div>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <p
+      class="bg-sunk text-muted mt-8 flex items-start gap-2.5 rounded-xl px-5 py-4 text-sm"
+    >
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+        class="text-subtle mt-0.5 h-4 w-4 shrink-0"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.25v2.25H9a.75.75 0 0 0 0 1.5h2a.75.75 0 0 0 0-1.5h-.25V9.75A.75.75 0 0 0 10 9H9Z"
+          clip-rule="evenodd"></path>
+      </svg>
+      <span>
+        <strong class="text-fg font-semibold">To be straight with you:</strong> the
+        three demos are businesses I made up, built to show what I can do rather than
+        for paying clients. Top Oil is a real, live site.
+      </span>
+    </p>
+  </div>
+</section>

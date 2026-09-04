@@ -1,0 +1,38 @@
+---
+import { steps } from "~/data/site";
+---
+
+<section id="process" class="border-line scroll-mt-24 border-b py-20 sm:py-24">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <h2 class="text-3xl font-bold sm:text-4xl">How it works</h2>
+    <p class="text-muted mt-3 max-w-2xl text-lg">
+      Four steps, and you only need to do the first one.
+    </p>
+
+    <ol class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        steps.map((step, index) => (
+          <li class="relative">
+            {/* Connector line to the next step — desktop only, decorative. */}
+            {index < steps.length - 1 && (
+              <span
+                aria-hidden="true"
+                class="bg-line-strong absolute top-6 left-14 hidden h-px w-[calc(100%-2.5rem)] lg:block"
+              />
+            )}
+
+            <span
+              aria-hidden="true"
+              class="bg-accent relative grid h-12 w-12 place-items-center rounded-full text-lg font-bold text-white"
+            >
+              {index + 1}
+            </span>
+
+            <h3 class="mt-5 text-lg font-semibold">{step.title}</h3>
+            <p class="text-muted mt-2">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

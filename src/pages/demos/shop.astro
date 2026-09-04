@@ -1,0 +1,782 @@
+---
+import Base from "~/layouts/Base.astro";
+import DemoBanner from "~/components/DemoBanner.astro";
+import ProductMark from "~/components/ProductMark.astro";
+import {
+  products,
+  categories,
+  formatPrice,
+  DELIVERY_PENCE,
+  FREE_DELIVERY_OVER_PENCE,
+} from "~/data/demo-shop";
+
+const shop = {
+  name: "Fernwood Supply",
+  strapline: "Houseplants, pots and a few good tools",
+  blurb:
+    "Grown two miles away, potted the morning they're picked, delivered by us on Thursdays. No plastic, no polystyrene, no fuss.",
+};
+---
+
+<Base
+  title={`${shop.name} — houseplants & pots (demo shop)`}
+  description="Demo online shop: product grid, working basket and a full checkout flow."
+  noindex
+  bodyClass="bg-shop-paper text-shop-ink"
+>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <div class="sticky top-0 z-40">
+    <DemoBanner business={shop.name} />
+
+    <header class="border-shop-line bg-shop-paper/95 border-b backdrop-blur-md">
+      <div
+        class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5"
+      >
+        <a href="#top" class="text-lg font-semibold tracking-tight">
+          {shop.name}
+        </a>
+
+        <button
+          type="button"
+          id="cart-open"
+          class="border-shop-line hover:border-shop-accent inline-flex items-center gap-2 rounded-full border bg-white px-4 py-2.5 text-sm font-semibold"
+        >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="h-4 w-4"
+          >
+            <path
+              d="M7 4h-2a1 1 0 0 0 0 2h1.2l2.2 9.6A2 2 0 0 0 10.35 17H18a1 1 0 0 0 0-2h-7.65l-.23-1H18a2 2 0 0 0 1.96-1.6l1.02-5A1 1 0 0 0 20 6H8.2l-.23-1A1.2 1.2 0 0 0 7 4Zm3 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm8 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"
+            ></path>
+          </svg>
+          Basket
+          <span
+            id="cart-count"
+            class="bg-shop-accent grid h-5 min-w-5 place-items-center rounded-full px-1.5 text-xs font-bold text-white"
+            >0</span
+          >
+        </button>
+      </div>
+    </header>
+  </div>
+
+  <main id="main">
+    <!-- Hero -->
+    <section id="top" class="border-shop-line bg-shop-sunk border-b">
+      <div class="mx-auto max-w-6xl px-5 py-16 sm:py-20">
+        <p
+          class="text-shop-accent text-sm font-semibold tracking-[0.2em] uppercase"
+        >
+          {shop.strapline}
+        </p>
+        <h1
+          class="mt-4 max-w-2xl text-4xl leading-[1.1] font-semibold sm:text-5xl"
+        >
+          Plants that survive being owned by a busy person.
+        </h1>
+        <p class="text-shop-muted mt-5 max-w-xl text-lg">{shop.blurb}</p>
+
+        <p
+          class="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium"
+        >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="text-shop-accent h-4 w-4"
+          >
+            <path
+              d="M3 5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1h2.4a1 1 0 0 1 .8.4l1.6 2.13a1 1 0 0 1 .2.6V13a1 1 0 0 1-1 1h-1a2.5 2.5 0 0 1-5 0H8a2.5 2.5 0 0 1-5 0 1 1 0 0 1-1-1V5Zm10 3v3h4V9.47L15.9 8H13Z"
+            ></path>
+          </svg>
+          Free local delivery over {formatPrice(FREE_DELIVERY_OVER_PENCE)} · otherwise
+          {formatPrice(DELIVERY_PENCE)}
+        </p>
+      </div>
+    </section>
+
+    <!-- Product grid -->
+    <section id="shop" class="py-16">
+      <div class="mx-auto max-w-6xl px-5">
+        <div
+          class="border-shop-line flex flex-wrap items-end justify-between gap-5 border-b pb-5"
+        >
+          <h2 class="text-2xl font-semibold">This week's shelf</h2>
+
+          <div
+            class="flex flex-wrap gap-2"
+            role="group"
+            aria-label="Filter products"
+          >
+            {
+              categories.map((category, index) => (
+                <button
+                  type="button"
+                  class="filter-btn border-shop-line hover:border-shop-accent aria-pressed:border-shop-accent aria-pressed:bg-shop-accent rounded-full border px-4 py-2 text-sm font-semibold aria-pressed:text-white"
+                  data-filter={category.value}
+                  aria-pressed={index === 0 ? "true" : "false"}
+                >
+                  {category.label}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <ul
+          id="product-grid"
+          class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          {
+            products.map((product) => (
+              <li data-category={product.category} class="flex">
+                <article class="border-shop-line flex w-full flex-col overflow-hidden rounded-2xl border bg-white">
+                  <div class="relative">
+                    <ProductMark
+                      variant={product.variant}
+                      tint={product.tint}
+                      wash={product.wash}
+                      class="block aspect-square w-full"
+                    />
+                    {product.badge && (
+                      <span class="bg-shop-ink absolute top-3 left-3 rounded-full px-2.5 py-1 text-[0.7rem] font-bold tracking-wide text-white uppercase">
+                        {product.badge}
+                      </span>
+                    )}
+                  </div>
+
+                  <div class="flex flex-1 flex-col p-5">
+                    <h3 class="font-semibold">{product.name}</h3>
+                    <p class="text-shop-muted mt-1.5 flex-1 text-sm">
+                      {product.blurb}
+                    </p>
+
+                    <div class="mt-4 flex items-center justify-between gap-3">
+                      <span class="text-lg font-semibold">
+                        {formatPrice(product.price)}
+                      </span>
+                      <button
+                        type="button"
+                        class="add-to-cart bg-shop-accent rounded-full px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+                        data-id={product.id}
+                      >
+                        Add to basket
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              </li>
+            ))
+          }
+        </ul>
+
+        <p id="grid-empty" hidden class="text-shop-muted mt-10 text-center">
+          Nothing in that category this week.
+        </p>
+      </div>
+    </section>
+
+    <!-- Checkout. Hidden until the basket sends you here. -->
+    <section
+      id="checkout"
+      hidden
+      class="border-shop-line bg-shop-sunk scroll-mt-32 border-t py-16"
+    >
+      <div class="mx-auto max-w-5xl px-5">
+        <ol
+          class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm font-semibold"
+          aria-label="Checkout progress"
+        >
+          <li class="text-shop-muted">1. Basket</li>
+          <li aria-hidden="true" class="text-shop-line">→</li>
+          <li id="step-details" class="text-shop-accent" aria-current="step">
+            2. Your details
+          </li>
+          <li aria-hidden="true" class="text-shop-line">→</li>
+          <li id="step-done" class="text-shop-muted">3. Confirmed</li>
+        </ol>
+
+        <div
+          id="checkout-form-wrap"
+          class="mt-8 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]"
+        >
+          <form
+            id="checkout-form"
+            class="border-shop-line rounded-2xl border bg-white p-7"
+            novalidate
+          >
+            <h2 class="text-2xl font-semibold">Where's it going?</h2>
+
+            <div class="mt-6 grid gap-5 sm:grid-cols-2">
+              <div class="sm:col-span-2">
+                <label for="co-name" class="block text-sm font-medium"
+                  >Full name</label
+                >
+                <input
+                  id="co-name"
+                  name="name"
+                  type="text"
+                  autocomplete="name"
+                  required
+                  class="border-shop-line mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
+                />
+              </div>
+              <div class="sm:col-span-2">
+                <label for="co-email" class="block text-sm font-medium"
+                  >Email</label
+                >
+                <input
+                  id="co-email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  class="border-shop-line mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
+                />
+              </div>
+              <div class="sm:col-span-2">
+                <label for="co-address" class="block text-sm font-medium">
+                  Address
+                </label>
+                <input
+                  id="co-address"
+                  name="address"
+                  type="text"
+                  autocomplete="street-address"
+                  required
+                  class="border-shop-line mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
+                />
+              </div>
+              <div>
+                <label for="co-city" class="block text-sm font-medium"
+                  >Town</label
+                >
+                <input
+                  id="co-city"
+                  name="city"
+                  type="text"
+                  autocomplete="address-level2"
+                  required
+                  class="border-shop-line mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
+                />
+              </div>
+              <div>
+                <label for="co-postcode" class="block text-sm font-medium">
+                  Postcode
+                </label>
+                <input
+                  id="co-postcode"
+                  name="postcode"
+                  type="text"
+                  autocomplete="postal-code"
+                  required
+                  class="border-shop-line mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
+                />
+              </div>
+              <div class="sm:col-span-2">
+                <label for="co-notes" class="block text-sm font-medium">
+                  Delivery notes <span class="text-shop-muted">(optional)</span>
+                </label>
+                <textarea
+                  id="co-notes"
+                  name="notes"
+                  rows="2"
+                  placeholder="Leave with next door if we're out"
+                  class="border-shop-line mt-1.5 w-full resize-y rounded-lg border px-3.5 py-2.5"
+                ></textarea>
+              </div>
+            </div>
+
+            <p
+              id="co-error"
+              role="alert"
+              hidden
+              class="bg-shop-accent/10 text-shop-accent mt-5 rounded-lg px-4 py-3 text-sm font-semibold"
+            >
+            </p>
+
+            <div
+              class="border-shop-line bg-shop-sunk text-shop-muted mt-6 flex items-start gap-3 rounded-lg border border-dashed px-4 py-3.5 text-sm"
+            >
+              <span aria-hidden="true">🔒</span>
+              <p>
+                <strong class="text-shop-ink font-semibold">
+                  Payment step skipped on purpose.
+                </strong>
+                A real shop would hand off to Stripe or PayPal here — this demo asks
+                for no card details at all.
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              id="co-submit"
+              class="bg-shop-accent mt-6 w-full rounded-full px-6 py-3.5 font-semibold text-white hover:opacity-90"
+            >
+              Place order
+            </button>
+          </form>
+
+          <aside class="border-shop-line h-fit rounded-2xl border bg-white p-6">
+            <h2 class="font-semibold">Your order</h2>
+            <ul id="checkout-lines" class="mt-4 space-y-3 text-sm"></ul>
+            <dl
+              id="checkout-totals"
+              class="border-shop-line mt-5 space-y-2 border-t pt-5 text-sm"
+            >
+            </dl>
+          </aside>
+        </div>
+
+        <!-- Confirmation -->
+        <div
+          id="order-confirmed"
+          role="status"
+          hidden
+          class="border-shop-line mx-auto mt-8 max-w-xl rounded-2xl border bg-white p-9 text-center"
+        >
+          <span
+            aria-hidden="true"
+            class="bg-shop-accent mx-auto grid h-16 w-16 place-items-center rounded-full text-3xl text-white"
+            >✓</span
+          >
+          <h2 class="mt-6 text-2xl font-semibold">Order placed</h2>
+          <p id="order-summary" class="text-shop-muted mt-3"></p>
+          <p
+            class="bg-shop-sunk text-shop-muted mt-6 rounded-lg px-4 py-3 text-sm"
+          >
+            Order <span id="order-number" class="font-mono font-semibold"
+            ></span> · delivery Thursday between 9am and 1pm.
+          </p>
+          <button
+            type="button"
+            id="order-reset"
+            class="text-shop-accent mt-6 text-sm font-semibold underline underline-offset-4"
+          >
+            Start again
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer
+    class="border-shop-line text-shop-muted border-t py-10 text-center text-sm"
+  >
+    <p class="text-shop-ink font-semibold">{shop.name}</p>
+    <p class="mt-2">{shop.strapline}</p>
+    <p class="mt-4">
+      <a href="/#work" class="font-semibold underline underline-offset-4">
+        This is a demo — back to the portfolio
+      </a>
+    </p>
+  </footer>
+
+  <!-- Basket drawer -->
+  <div
+    id="cart-backdrop"
+    hidden
+    class="fixed inset-0 z-50 bg-black/40 opacity-0 transition-opacity duration-200"
+  >
+  </div>
+
+  <aside
+    id="cart-drawer"
+    hidden
+    aria-label="Your basket"
+    class="border-shop-line fixed top-0 right-0 z-50 flex h-dvh w-full max-w-sm translate-x-full flex-col border-l bg-white transition-transform duration-200"
+  >
+    <div
+      class="border-shop-line flex items-center justify-between border-b px-5 py-4"
+    >
+      <h2 class="text-lg font-semibold">Your basket</h2>
+      <button
+        type="button"
+        id="cart-close"
+        class="hover:bg-shop-sunk rounded-full p-2"
+        aria-label="Close basket"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="h-5 w-5"
+        >
+          <path
+            d="M6.3 5A1 1 0 0 0 5 6.3L8.6 10 5 13.7a1 1 0 1 0 1.4 1.4L10 11.4l3.6 3.7a1 1 0 0 0 1.4-1.4L11.4 10 15 6.3A1 1 0 0 0 13.6 5L10 8.6 6.4 5Z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <ul
+      id="cart-lines"
+      class="divide-shop-line flex-1 divide-y overflow-y-auto px-5"
+    >
+    </ul>
+
+    <p id="cart-empty" class="text-shop-muted flex-1 px-5 py-12 text-center">
+      Nothing in here yet.
+    </p>
+
+    <div id="cart-footer" hidden class="border-shop-line border-t px-5 py-5">
+      <dl id="cart-totals" class="space-y-2 text-sm"></dl>
+      <button
+        type="button"
+        id="cart-checkout"
+        class="bg-shop-accent mt-5 w-full rounded-full px-6 py-3.5 font-semibold text-white hover:opacity-90"
+      >
+        Checkout
+      </button>
+      <button
+        type="button"
+        id="cart-continue"
+        class="text-shop-muted mt-3 w-full text-sm font-semibold underline underline-offset-4"
+      >
+        Keep shopping
+      </button>
+    </div>
+  </aside>
+</Base>
+
+<script>
+  import {
+    products,
+    formatPrice,
+    DELIVERY_PENCE,
+    FREE_DELIVERY_OVER_PENCE,
+  } from "~/data/demo-shop";
+
+  const byId = new Map(
+    products.map((product) => [product.id, product] as const),
+  );
+  const STORAGE_KEY = "fernwood-basket";
+
+  /* ── State ────────────────────────────────────────────────────────────── */
+
+  type Basket = Record<string, number>;
+
+  const load = (): Basket => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw) as unknown;
+      if (typeof parsed !== "object" || parsed === null) return {};
+      /* Drop anything that isn't still a real product — the catalogue moves on
+         but a stale basket in someone's browser doesn't. */
+      return Object.fromEntries(
+        Object.entries(parsed as Basket).filter(
+          ([id, qty]) => byId.has(id) && Number.isFinite(qty) && qty > 0,
+        ),
+      );
+    } catch {
+      return {};
+    }
+  };
+
+  let basket: Basket = load();
+
+  const save = () => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(basket));
+    } catch {
+      /* Private browsing, storage full — the basket just won't survive a reload. */
+    }
+  };
+
+  const lines = () =>
+    Object.entries(basket).map(([id, qty]) => ({
+      product: byId.get(id)!,
+      qty,
+    }));
+
+  const subtotal = () =>
+    lines().reduce((sum, line) => sum + line.product.price * line.qty, 0);
+
+  const delivery = () => {
+    const sub = subtotal();
+    return sub === 0 || sub >= FREE_DELIVERY_OVER_PENCE ? 0 : DELIVERY_PENCE;
+  };
+
+  const itemCount = () =>
+    Object.values(basket).reduce((sum, qty) => sum + qty, 0);
+
+  /* ── Elements ─────────────────────────────────────────────────────────── */
+
+  const $ = <T extends HTMLElement>(id: string) =>
+    document.getElementById(id) as T | null;
+
+  const drawer = $<HTMLElement>("cart-drawer");
+  const backdrop = $<HTMLElement>("cart-backdrop");
+  const cartLines = $<HTMLUListElement>("cart-lines");
+  const cartEmpty = $<HTMLElement>("cart-empty");
+  const cartFooter = $<HTMLElement>("cart-footer");
+  const cartTotals = $<HTMLElement>("cart-totals");
+  const cartCount = $<HTMLElement>("cart-count");
+  const openButton = $<HTMLButtonElement>("cart-open");
+  const checkoutSection = $<HTMLElement>("checkout");
+
+  /* ── Rendering ────────────────────────────────────────────────────────── */
+
+  const totalsMarkup = () => {
+    const sub = subtotal();
+    const ship = delivery();
+    const rows = [
+      ["Subtotal", formatPrice(sub)],
+      ["Delivery", ship === 0 ? "Free" : formatPrice(ship)],
+    ];
+    return (
+      rows
+        .map(
+          ([label, value]) =>
+            `<div class="flex justify-between text-shop-muted"><dt>${label}</dt><dd>${value}</dd></div>`,
+        )
+        .join("") +
+      `<div class="flex justify-between border-t border-shop-line pt-2 text-base font-semibold text-shop-ink"><dt>Total</dt><dd>${formatPrice(sub + ship)}</dd></div>`
+    );
+  };
+
+  const renderDrawer = () => {
+    if (!cartLines || !cartEmpty || !cartFooter || !cartTotals || !cartCount)
+      return;
+
+    const current = lines();
+    cartCount.textContent = String(itemCount());
+    cartEmpty.hidden = current.length > 0;
+    cartFooter.hidden = current.length === 0;
+    cartLines.hidden = current.length === 0;
+
+    cartLines.innerHTML = current
+      .map(
+        ({ product, qty }) => `
+        <li class="flex gap-4 py-4">
+          <div class="flex-1">
+            <h3 class="font-semibold">${product.name}</h3>
+            <p class="mt-0.5 text-sm text-shop-muted">${formatPrice(product.price)} each</p>
+            <div class="mt-3 flex items-center gap-3">
+              <div class="flex items-center rounded-full border border-shop-line">
+                <button type="button" class="qty grid h-8 w-8 place-items-center rounded-full text-lg hover:bg-shop-sunk" data-id="${product.id}" data-step="-1" aria-label="One fewer ${product.name}">−</button>
+                <span class="w-6 text-center text-sm font-semibold" aria-live="polite">${qty}</span>
+                <button type="button" class="qty grid h-8 w-8 place-items-center rounded-full text-lg hover:bg-shop-sunk" data-id="${product.id}" data-step="1" aria-label="One more ${product.name}">+</button>
+              </div>
+              <button type="button" class="remove text-sm font-semibold text-shop-muted underline underline-offset-4 hover:text-shop-ink" data-id="${product.id}">Remove</button>
+            </div>
+          </div>
+          <p class="font-semibold">${formatPrice(product.price * qty)}</p>
+        </li>`,
+      )
+      .join("");
+
+    cartTotals.innerHTML = totalsMarkup();
+    renderCheckoutSummary();
+  };
+
+  const renderCheckoutSummary = () => {
+    const linesEl = $<HTMLElement>("checkout-lines");
+    const totalsEl = $<HTMLElement>("checkout-totals");
+    if (!linesEl || !totalsEl) return;
+
+    linesEl.innerHTML = lines()
+      .map(
+        ({ product, qty }) => `
+        <li class="flex justify-between gap-4">
+          <span>${qty} × ${product.name}</span>
+          <span class="font-semibold whitespace-nowrap">${formatPrice(product.price * qty)}</span>
+        </li>`,
+      )
+      .join("");
+
+    totalsEl.innerHTML = totalsMarkup();
+  };
+
+  /* ── Drawer open / close ──────────────────────────────────────────────── */
+
+  let lastFocused: HTMLElement | null = null;
+
+  const openDrawer = () => {
+    if (!drawer || !backdrop) return;
+    lastFocused = document.activeElement as HTMLElement;
+    drawer.hidden = false;
+    backdrop.hidden = false;
+    document.body.style.overflow = "hidden";
+    requestAnimationFrame(() => {
+      drawer.classList.remove("translate-x-full");
+      backdrop.classList.remove("opacity-0");
+    });
+    $<HTMLButtonElement>("cart-close")?.focus();
+  };
+
+  const closeDrawer = () => {
+    if (!drawer || !backdrop) return;
+    drawer.classList.add("translate-x-full");
+    backdrop.classList.add("opacity-0");
+    document.body.style.overflow = "";
+    window.setTimeout(() => {
+      drawer.hidden = true;
+      backdrop.hidden = true;
+    }, 200);
+    lastFocused?.focus();
+  };
+
+  openButton?.addEventListener("click", openDrawer);
+  $<HTMLButtonElement>("cart-close")?.addEventListener("click", closeDrawer);
+  $<HTMLButtonElement>("cart-continue")?.addEventListener("click", closeDrawer);
+  backdrop?.addEventListener("click", closeDrawer);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && drawer && !drawer.hidden) closeDrawer();
+  });
+
+  /* ── Basket actions ───────────────────────────────────────────────────── */
+
+  const setQty = (id: string, qty: number) => {
+    if (qty <= 0) delete basket[id];
+    else basket[id] = Math.min(qty, 99);
+    save();
+    renderDrawer();
+  };
+
+  document
+    .querySelectorAll<HTMLButtonElement>(".add-to-cart")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        const id = button.dataset.id;
+        if (!id || !byId.has(id)) return;
+        setQty(id, (basket[id] ?? 0) + 1);
+        openDrawer();
+      });
+    });
+
+  cartLines?.addEventListener("click", (event) => {
+    const target = (event.target as HTMLElement).closest<HTMLButtonElement>(
+      ".qty, .remove",
+    );
+    const id = target?.dataset.id;
+    if (!target || !id) return;
+
+    if (target.classList.contains("remove")) setQty(id, 0);
+    else setQty(id, (basket[id] ?? 0) + Number(target.dataset.step));
+  });
+
+  /* ── Category filter ──────────────────────────────────────────────────── */
+
+  const gridItems =
+    document.querySelectorAll<HTMLLIElement>("#product-grid > li");
+  const gridEmpty = $<HTMLElement>("grid-empty");
+
+  document
+    .querySelectorAll<HTMLButtonElement>(".filter-btn")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.dataset.filter ?? "all";
+
+        document
+          .querySelectorAll<HTMLButtonElement>(".filter-btn")
+          .forEach((other) =>
+            other.setAttribute("aria-pressed", String(other === button)),
+          );
+
+        let shown = 0;
+        gridItems.forEach((item) => {
+          const match = filter === "all" || item.dataset.category === filter;
+          item.hidden = !match;
+          if (match) shown += 1;
+        });
+
+        if (gridEmpty) gridEmpty.hidden = shown > 0;
+      });
+    });
+
+  /* ── Checkout ─────────────────────────────────────────────────────────── */
+
+  const checkoutForm = $<HTMLFormElement>("checkout-form");
+  const confirmed = $<HTMLElement>("order-confirmed");
+  const formWrap = $<HTMLElement>("checkout-form-wrap");
+
+  $<HTMLButtonElement>("cart-checkout")?.addEventListener("click", () => {
+    if (!checkoutSection) return;
+    closeDrawer();
+    checkoutSection.hidden = false;
+    renderCheckoutSummary();
+    checkoutSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  checkoutForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const error = $<HTMLElement>("co-error");
+    if (!error || !confirmed || !formWrap) return;
+
+    error.hidden = true;
+
+    const data = new FormData(checkoutForm);
+    const required = ["name", "email", "address", "city", "postcode"] as const;
+    const missing = required.find(
+      (field) => !String(data.get(field) || "").trim(),
+    );
+
+    if (missing) {
+      error.textContent =
+        "Please fill in every field except the delivery notes.";
+      error.hidden = false;
+      checkoutForm
+        .querySelector<HTMLInputElement>(`[name="${missing}"]`)
+        ?.focus();
+      return;
+    }
+
+    const email = String(data.get("email") || "");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      error.textContent = "That email address doesn't look right.";
+      error.hidden = false;
+      checkoutForm.querySelector<HTMLInputElement>('[name="email"]')?.focus();
+      return;
+    }
+
+    if (itemCount() === 0) {
+      error.textContent = "Your basket is empty.";
+      error.hidden = false;
+      return;
+    }
+
+    const total = formatPrice(subtotal() + delivery());
+    const count = itemCount();
+
+    const summary = $<HTMLElement>("order-summary");
+    if (summary) {
+      summary.textContent = `Thanks ${String(data.get("name")).trim()} — ${count} ${count === 1 ? "item" : "items"}, ${total}. A receipt is on its way to ${email}.`;
+    }
+
+    const orderNumber = $<HTMLElement>("order-number");
+    if (orderNumber) {
+      orderNumber.textContent = `FW-${String(Date.now()).slice(-6)}`;
+    }
+
+    /* Mark the last step done. */
+    $<HTMLElement>("step-details")?.removeAttribute("aria-current");
+    $<HTMLElement>("step-details")?.classList.replace(
+      "text-shop-accent",
+      "text-shop-muted",
+    );
+    const done = $<HTMLElement>("step-done");
+    done?.classList.replace("text-shop-muted", "text-shop-accent");
+    done?.setAttribute("aria-current", "step");
+
+    basket = {};
+    save();
+    renderDrawer();
+
+    formWrap.hidden = true;
+    confirmed.hidden = false;
+    confirmed.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  $<HTMLButtonElement>("order-reset")?.addEventListener("click", () => {
+    window.location.href = "#top";
+    window.location.reload();
+  });
+
+  renderDrawer();
+</script>

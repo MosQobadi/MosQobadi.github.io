@@ -1,0 +1,161 @@
+---
+import {
+  closing,
+  site,
+  WHATSAPP_NUMBER,
+  whatsappConfigured,
+} from "~/data/site";
+import WhatsAppButton from "./WhatsAppButton.astro";
+---
+
+<section
+  id="contact"
+  class="bg-night text-night-fg scroll-mt-24 py-20 sm:py-24"
+>
+  <div
+    class="mx-auto grid max-w-6xl gap-14 px-5 sm:px-8 lg:grid-cols-2 lg:gap-20"
+  >
+    <div>
+      <h2 class="text-3xl font-bold sm:text-4xl">{closing.heading}</h2>
+      <p class="text-night-muted mt-4 max-w-lg text-lg">{closing.body}</p>
+
+      <div class="mt-8">
+        <WhatsAppButton label={closing.cta} variant="onDark" />
+      </div>
+
+      {
+        site.email && (
+          <p class="text-night-muted mt-6 text-sm">
+            Prefer email?{" "}
+            <a
+              href={`mailto:${site.email}`}
+              class="text-night-fg font-medium underline underline-offset-4 hover:text-white"
+            >
+              {site.email}
+            </a>
+          </p>
+        )
+      }
+    </div>
+
+    <!--
+      A backup for people who freeze at an empty chat box: fill three fields and
+      the button writes the WhatsApp message for them. No server, no form
+      service, nothing to break — it just builds a wa.me link.
+    -->
+    <div class="rounded-[14px] border border-white/15 bg-white/5 p-7">
+      <h3 class="text-lg font-semibold">Not sure what to say?</h3>
+      <p class="text-night-muted mt-2 text-sm">
+        Fill these in and I'll write the message for you — you just hit send.
+      </p>
+
+      <form id="message-builder" class="mt-6 space-y-4" novalidate>
+        <div>
+          <label for="mb-name" class="block text-sm font-medium"
+            >Your name</label
+          >
+          <input
+            id="mb-name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            required
+            class="bg-night text-night-fg mt-1.5 w-full rounded-lg border border-white/20 px-3.5 py-2.5 placeholder:text-white/35 focus:border-white/50"
+            placeholder="Sam"
+          />
+        </div>
+
+        <div>
+          <label for="mb-business" class="block text-sm font-medium">
+            What's your business?
+          </label>
+          <input
+            id="mb-business"
+            name="business"
+            type="text"
+            required
+            class="bg-night text-night-fg mt-1.5 w-full rounded-lg border border-white/20 px-3.5 py-2.5 placeholder:text-white/35 focus:border-white/50"
+            placeholder="A small pizzeria in town"
+          />
+        </div>
+
+        <div>
+          <label for="mb-need" class="block text-sm font-medium">
+            What do you need? <span class="text-night-muted">(optional)</span>
+          </label>
+          <textarea
+            id="mb-need"
+            name="need"
+            rows="3"
+            class="bg-night text-night-fg mt-1.5 w-full resize-y rounded-lg border border-white/20 px-3.5 py-2.5 placeholder:text-white/35 focus:border-white/50"
+            placeholder="Somewhere to put the menu and take table bookings"
+          ></textarea>
+        </div>
+
+        <p
+          id="mb-error"
+          role="alert"
+          hidden
+          class="text-sm font-medium text-[#ff9d80]"
+        >
+        </p>
+
+        <button
+          type="submit"
+          class="bg-accent hover:bg-accent-bright w-full rounded-full px-6 py-3.5 font-semibold text-white transition-colors"
+        >
+          Write my message
+        </button>
+
+        <p class="text-night-muted text-xs">
+          This opens WhatsApp with the message already typed. Nothing is sent
+          until you press send there.
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ WHATSAPP_NUMBER, whatsappConfigured }}>
+  const form = document.getElementById("message-builder");
+  const error = document.getElementById("mb-error");
+
+  const fail = (message) => {
+    error.textContent = message;
+    error.hidden = false;
+  };
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    error.hidden = true;
+
+    const data = new FormData(form);
+    const name = String(data.get("name") || "").trim();
+    const business = String(data.get("business") || "").trim();
+    const need = String(data.get("need") || "").trim();
+
+    if (!name || !business) {
+      fail("Please fill in your name and what your business is.");
+      (name ? form.elements.business : form.elements.name).focus();
+      return;
+    }
+
+    if (!whatsappConfigured) {
+      fail("WhatsApp isn't set up on this site yet.");
+      return;
+    }
+
+    const lines = [
+      `Hi, I'm ${name}.`,
+      `I run ${business}.`,
+      need && `What I need: ${need}`,
+      "Could you tell me what a website would cost?",
+    ].filter(Boolean);
+
+    window.open(
+      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`,
+      "_blank",
+      "noopener",
+    );
+  });
+</script>

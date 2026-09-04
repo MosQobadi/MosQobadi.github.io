@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# The /demos/ pages carry <meta name="robots" content="noindex"> instead of a
+# Disallow here — they need to stay crawlable for that tag to be seen, and the
+# whole point is that they don't compete with the portfolio in search results.

@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Design tokens.
+ *
+ * These are ROLES, not shades. `text-muted` means "secondary text", not
+ * "grey-500" — so the whole site can be re-tinted from this block alone.
+ * Every pairing below is contrast-checked against `paper`:
+ *   fg 17.7:1 · muted 7.5:1 · subtle 4.9:1 · accent 4.9:1 · white-on-accent 5.1:1
+ * If you change a colour, keep it at or above those numbers.
+ * ────────────────────────────────────────────────────────────────────────── */
+@theme {
+  --color-paper: #fbf9f6;
+  --color-surface: #ffffff;
+  --color-sunk: #f3efe9;
+  --color-fg: #16130f;
+  --color-muted: #57514a;
+  --color-subtle: #746d64;
+  --color-line: #e7e1d9;
+  --color-line-strong: #d3cbc0;
+
+  /* Brand red-orange. `accent` is safe for text AND as a fill under white. */
+  --color-accent: #c2431d;
+  --color-accent-bright: #e4572e;
+  --color-accent-wash: #fdf0eb;
+
+  /* Ink-on-dark sections (the closing CTA band). */
+  --color-night: #16130f;
+  --color-night-fg: #f7f3ee;
+  --color-night-muted: #b3aaa0;
+
+  --font-sans:
+    "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+
+  /* ── Demo palettes ──────────────────────────────────────────────────────
+   * The three demos under /demos/ are meant to look like three different
+   * businesses, so each gets its own token set rather than reusing the
+   * portfolio's. Prefixes keep them out of each other's way: `bg-cafe-paper`,
+   * `text-trade-ink`, `bg-shop-accent`. Same contrast rules as above —
+   * every accent below clears 4.5:1 under white text.
+   * ──────────────────────────────────────────────────────────────────── */
+
+  /* Olive & Ember — restaurant */
+  --color-cafe-paper: #fbf7ef;
+  --color-cafe-surface: #fffdf8;
+  --color-cafe-ink: #1e2317;
+  --color-cafe-muted: #55604a;
+  --color-cafe-line: #e6decc;
+  --color-cafe-accent: #b04a18;
+  --color-cafe-deep: #2c3a22;
+
+  /* Northgate Plumbing — service business */
+  --color-trade-paper: #f4f6f8;
+  --color-trade-surface: #ffffff;
+  --color-trade-ink: #0f1b26;
+  --color-trade-muted: #4a5a68;
+  --color-trade-line: #d8dfe5;
+  --color-trade-accent: #0b63a8;
+  --color-trade-urgent: #c2410c;
+
+  /* Fernwood Supply — shop */
+  --color-shop-paper: #fdfdfc;
+  --color-shop-sunk: #f4f4f1;
+  --color-shop-ink: #14181a;
+  --color-shop-muted: #4f5b57;
+  --color-shop-line: #e4e4e1;
+  --color-shop-accent: #1f6f4a;
+
+  --font-cafe: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-trade:
+    "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 14px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Anchor links land below the sticky header instead of under it. */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Several panels here are toggled with the `hidden` attribute while also
+     carrying a Tailwind display utility (`flex`, `grid`). The utility would
+     otherwise win over the browser's default `[hidden] { display: none }`. */
+  [hidden] {
+    display: none !important;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* A visible focus ring everywhere, including for mouse users on inputs. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* Skip link — visually hidden until focused by a keyboard user. */
+  .skip-link {
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    z-index: 100;
+    transform: translateY(-200%);
+    background: var(--color-fg);
+    color: var(--color-paper);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: transform 0.15s ease;
+  }
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+}

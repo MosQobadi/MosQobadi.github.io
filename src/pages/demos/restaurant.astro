@@ -1,0 +1,636 @@
+---
+import "@fontsource-variable/fraunces";
+import Base from "~/layouts/Base.astro";
+import DemoBanner from "~/components/DemoBanner.astro";
+
+/* ── Demo content ─────────────────────────────────────────────────────────
+ * Everything this fictional restaurant needs lives in this file, so the whole
+ * page can be lifted out and re-pointed at a real client's details.
+ * ─────────────────────────────────────────────────────────────────────── */
+
+const restaurant = {
+  name: "Olive & Ember",
+  tagline: "Wood-fired plates, a short menu, a long evening.",
+  blurb:
+    "A twelve-table room on Bridge Street. Everything comes off the fire, the menu changes when the market does, and we keep a few seats back for walk-ins.",
+  address: ["48 Bridge Street", "Riverside", "RV1 2QT"],
+  phone: "01234 567 890",
+  /* OpenStreetMap needs no API key and no billing account — good enough for a
+     demo, and swapped for Google Maps on a real build if the client wants it. */
+  mapEmbed:
+    "https://www.openstreetmap.org/export/embed.html?bbox=-0.1120%2C51.5060%2C-0.0960%2C51.5140&layer=mapnik&marker=51.5100%2C-0.1040",
+  mapLink:
+    "https://www.openstreetmap.org/?mlat=51.5100&mlon=-0.1040#map=16/51.5100/-0.1040",
+};
+
+/** 0 = Sunday, matching JavaScript's Date#getDay(). */
+const hours = [
+  { day: "Monday", index: 1, open: null, close: null, label: "Closed" },
+  { day: "Tuesday", index: 2, open: 17.5, close: 22, label: "5.30pm – 10pm" },
+  { day: "Wednesday", index: 3, open: 17.5, close: 22, label: "5.30pm – 10pm" },
+  { day: "Thursday", index: 4, open: 17.5, close: 22, label: "5.30pm – 10pm" },
+  { day: "Friday", index: 5, open: 17, close: 23, label: "5pm – 11pm" },
+  { day: "Saturday", index: 6, open: 12, close: 23, label: "12pm – 11pm" },
+  { day: "Sunday", index: 0, open: 12, close: 17, label: "12pm – 5pm" },
+];
+
+const menu = [
+  {
+    heading: "To start",
+    note: "Made for the middle of the table.",
+    items: [
+      {
+        name: "Charred flatbread, whipped feta",
+        description: "Straight off the fire, honey and thyme",
+        price: "£7",
+      },
+      {
+        name: "Blistered padrón peppers",
+        description: "Sea salt, lemon",
+        price: "£6.50",
+      },
+      {
+        name: "Smoked almonds & olives",
+        description: "Rosemary, orange peel",
+        price: "£5",
+      },
+      {
+        name: "Burrata, roast grapes",
+        description: "Aged balsamic, toasted hazelnut",
+        price: "£11",
+      },
+    ],
+  },
+  {
+    heading: "From the fire",
+    note: "Everything here meets the embers.",
+    items: [
+      {
+        name: "Half chicken, lemon & oregano",
+        description: "Charred greens, pan juices",
+        price: "£19",
+      },
+      {
+        name: "Whole sea bream",
+        description: "Fennel, brown butter, capers",
+        price: "£24",
+      },
+      {
+        name: "Dry-aged sirloin, 300g",
+        description: "Bone marrow butter, watercress",
+        price: "£31",
+      },
+      {
+        name: "Ember-baked celeriac",
+        description: "Hazelnut crumb, sage — vegan",
+        price: "£16",
+      },
+    ],
+  },
+  {
+    heading: "Sides & sweet",
+    note: "",
+    items: [
+      {
+        name: "Fat chips, rosemary salt",
+        description: "",
+        price: "£5.50",
+      },
+      {
+        name: "Tomato & shallot salad",
+        description: "Aged sherry vinegar",
+        price: "£6",
+      },
+      {
+        name: "Burnt basque cheesecake",
+        description: "The only pudding. It sells out.",
+        price: "£8",
+      },
+      {
+        name: "Affogato",
+        description: "Espresso, vanilla, amaretti",
+        price: "£6",
+      },
+    ],
+  },
+];
+
+const nav = [
+  { href: "#menu", label: "Menu" },
+  { href: "#hours", label: "Hours" },
+  { href: "#find-us", label: "Find us" },
+];
+---
+
+<Base
+  title={`${restaurant.name} — wood-fired restaurant (demo site)`}
+  description="Demo restaurant website: menu, opening hours, map and table bookings on one page."
+  noindex
+  bodyClass="bg-cafe-paper text-cafe-ink"
+>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <div class="sticky top-0 z-50">
+    <DemoBanner business={restaurant.name} />
+
+    <header class="border-cafe-line bg-cafe-paper/95 border-b backdrop-blur-md">
+      <div
+        class="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-5"
+      >
+        <a href="#top" class="font-cafe text-xl font-semibold tracking-tight">
+          {restaurant.name}
+        </a>
+        <nav aria-label="Main" class="flex items-center gap-1">
+          {
+            nav.map((item) => (
+              <a
+                href={item.href}
+                class="text-cafe-muted hover:text-cafe-ink hidden rounded px-3 py-2 text-sm font-medium sm:inline-block"
+              >
+                {item.label}
+              </a>
+            ))
+          }
+          <a
+            href="#book"
+            class="bg-cafe-accent rounded-full px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+          >
+            Book a table
+          </a>
+        </nav>
+      </div>
+    </header>
+  </div>
+
+  <main id="main">
+    <!-- Hero -->
+    <section
+      id="top"
+      class="bg-cafe-deep text-cafe-paper relative overflow-hidden"
+    >
+      <div class="ember-glow" aria-hidden="true"></div>
+      <div class="grain" aria-hidden="true"></div>
+
+      <div class="relative mx-auto max-w-5xl px-5 py-24 text-center sm:py-32">
+        <p
+          class="text-cafe-paper/70 text-sm font-semibold tracking-[0.25em] uppercase"
+        >
+          Riverside · Est. 2019
+        </p>
+        <h1
+          class="font-cafe mt-6 text-4xl leading-[1.08] font-semibold sm:text-6xl"
+        >
+          {restaurant.tagline}
+        </h1>
+        <p class="text-cafe-paper/80 mx-auto mt-6 max-w-xl text-lg">
+          {restaurant.blurb}
+        </p>
+        <div class="mt-9 flex flex-wrap justify-center gap-3">
+          <a
+            href="#book"
+            class="bg-cafe-accent rounded-full px-7 py-3.5 font-semibold text-white hover:opacity-90"
+          >
+            Book a table
+          </a>
+          <a
+            href="#menu"
+            class="border-cafe-paper/35 hover:bg-cafe-paper/10 rounded-full border px-7 py-3.5 font-semibold"
+          >
+            See the menu
+          </a>
+        </div>
+
+        <p class="text-cafe-paper/70 mt-8 text-sm">
+          <span id="open-status" class="font-semibold">Tue–Sun</span> ·
+          {restaurant.phone}
+        </p>
+      </div>
+    </section>
+
+    <!-- Menu -->
+    <section id="menu" class="scroll-mt-32 py-20 sm:py-24">
+      <div class="mx-auto max-w-5xl px-5">
+        <header class="text-center">
+          <h2 class="font-cafe text-3xl font-semibold sm:text-4xl">The menu</h2>
+          <p class="text-cafe-muted mt-3">
+            Changes every few weeks. Ask about the specials board.
+          </p>
+        </header>
+
+        <div class="mt-14 grid gap-12 md:grid-cols-3">
+          {
+            menu.map((group) => (
+              <section>
+                <h3 class="font-cafe border-cafe-line border-b pb-3 text-xl font-semibold">
+                  {group.heading}
+                </h3>
+                {group.note && (
+                  <p class="text-cafe-muted mt-3 text-sm italic">
+                    {group.note}
+                  </p>
+                )}
+                <ul class="mt-5 space-y-5">
+                  {group.items.map((item) => (
+                    <li>
+                      <div class="flex items-baseline gap-2">
+                        <h4 class="font-semibold">{item.name}</h4>
+                        <span
+                          aria-hidden="true"
+                          class="border-cafe-line h-px flex-1 translate-y-[-2px] border-b border-dotted"
+                        />
+                        <span class="text-cafe-accent font-semibold">
+                          {item.price}
+                        </span>
+                      </div>
+                      {item.description && (
+                        <p class="text-cafe-muted mt-1 text-sm">
+                          {item.description}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))
+          }
+        </div>
+
+        <p class="text-cafe-muted mt-12 text-center text-sm">
+          Allergens: please tell us and we'll walk you through it. A
+          discretionary 12.5% service charge is added to tables of six or more.
+        </p>
+      </div>
+    </section>
+
+    <!-- Hours + Find us -->
+    <section class="border-cafe-line bg-cafe-surface border-y py-20 sm:py-24">
+      <div class="mx-auto grid max-w-5xl gap-14 px-5 lg:grid-cols-2 lg:gap-16">
+        <div id="hours" class="scroll-mt-32">
+          <h2 class="font-cafe text-3xl font-semibold">Opening hours</h2>
+          <p
+            id="open-now"
+            class="bg-cafe-paper mt-4 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-semibold"
+          >
+            <span class="bg-cafe-muted h-2 w-2 rounded-full"></span>
+            Checking…
+          </p>
+
+          <table class="mt-6 w-full text-[0.9375rem]">
+            <caption class="sr-only">Opening hours by day</caption>
+            <tbody>
+              {
+                hours.map((row) => (
+                  <tr
+                    data-day={row.index}
+                    class="border-cafe-line border-b last:border-0"
+                  >
+                    <th
+                      scope="row"
+                      class="py-3 text-left font-medium whitespace-nowrap"
+                    >
+                      {row.day}
+                    </th>
+                    <td
+                      class:list={[
+                        "py-3 text-right",
+                        row.open === null ? "text-cafe-muted" : "",
+                      ]}
+                    >
+                      {row.label}
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+
+          <p class="text-cafe-muted mt-5 text-sm">
+            Kitchen closes 45 minutes before the door does.
+          </p>
+        </div>
+
+        <div id="find-us" class="scroll-mt-32">
+          <h2 class="font-cafe text-3xl font-semibold">Find us</h2>
+
+          <address class="mt-4 text-[0.9375rem] not-italic">
+            {
+              restaurant.address.map((line) => (
+                <span class="block">{line}</span>
+              ))
+            }
+            <a
+              href={`tel:${restaurant.phone.replace(/\s/g, "")}`}
+              class="text-cafe-accent mt-3 inline-block font-semibold underline underline-offset-4"
+            >
+              {restaurant.phone}
+            </a>
+          </address>
+
+          <div
+            class="border-cafe-line bg-cafe-paper mt-6 overflow-hidden rounded-xl border"
+          >
+            <iframe
+              src={restaurant.mapEmbed}
+              title={`Map showing ${restaurant.name} on Bridge Street`}
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              class="block h-64 w-full border-0"></iframe>
+          </div>
+
+          <a
+            href={restaurant.mapLink}
+            target="_blank"
+            rel="noopener"
+            class="text-cafe-accent mt-3 inline-block text-sm font-semibold underline underline-offset-4"
+          >
+            Open in maps →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Booking -->
+    <section id="book" class="scroll-mt-32 py-20 sm:py-24">
+      <div class="mx-auto max-w-2xl px-5">
+        <header class="text-center">
+          <h2 class="font-cafe text-3xl font-semibold sm:text-4xl">
+            Book a table
+          </h2>
+          <p class="text-cafe-muted mt-3">
+            For six or more, give us a ring instead — we'll move some tables
+            around.
+          </p>
+        </header>
+
+        <form
+          id="booking-form"
+          class="border-cafe-line bg-cafe-surface mt-10 rounded-2xl border p-7"
+          novalidate
+        >
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="bk-date" class="block text-sm font-medium">Date</label
+              >
+              <input
+                id="bk-date"
+                name="date"
+                type="date"
+                required
+                class="border-cafe-line bg-cafe-paper mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
+              />
+            </div>
+            <div>
+              <label for="bk-time" class="block text-sm font-medium">Time</label
+              >
+              <select
+                id="bk-time"
+                name="time"
+                required
+                class="border-cafe-line bg-cafe-paper mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
+              >
+                <option value="">Choose a time</option>
+                {
+                  [
+                    "17:30",
+                    "18:00",
+                    "18:30",
+                    "19:00",
+                    "19:30",
+                    "20:00",
+                    "20:30",
+                    "21:00",
+                  ].map((time) => <option value={time}>{time}</option>)
+                }
+              </select>
+            </div>
+            <div>
+              <label for="bk-people" class="block text-sm font-medium">
+                How many of you?
+              </label>
+              <select
+                id="bk-people"
+                name="people"
+                required
+                class="border-cafe-line bg-cafe-paper mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
+              >
+                {
+                  [1, 2, 3, 4, 5, 6].map((n) => (
+                    <option value={n} selected={n === 2}>
+                      {n} {n === 1 ? "person" : "people"}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+            <div>
+              <label for="bk-name" class="block text-sm font-medium">Name</label
+              >
+              <input
+                id="bk-name"
+                name="name"
+                type="text"
+                autocomplete="name"
+                required
+                class="border-cafe-line bg-cafe-paper mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
+              />
+            </div>
+            <div class="sm:col-span-2">
+              <label for="bk-phone" class="block text-sm font-medium">
+                Phone
+              </label>
+              <input
+                id="bk-phone"
+                name="phone"
+                type="tel"
+                autocomplete="tel"
+                required
+                class="border-cafe-line bg-cafe-paper mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
+              />
+            </div>
+          </div>
+
+          <p
+            id="bk-error"
+            role="alert"
+            hidden
+            class="bg-cafe-accent/10 text-cafe-accent mt-5 rounded-lg px-4 py-3 text-sm font-medium"
+          >
+          </p>
+
+          <button
+            type="submit"
+            class="bg-cafe-accent mt-6 w-full rounded-full px-6 py-3.5 font-semibold text-white hover:opacity-90"
+          >
+            Request this table
+          </button>
+
+          <p class="text-cafe-muted mt-4 text-center text-xs">
+            On a real site this would email the restaurant and text you back.
+            Here it just shows you what happens next.
+          </p>
+        </form>
+
+        <div
+          id="bk-success"
+          role="status"
+          hidden
+          class="border-cafe-line bg-cafe-surface mt-10 rounded-2xl border p-8 text-center"
+        >
+          <span
+            aria-hidden="true"
+            class="bg-cafe-accent mx-auto grid h-14 w-14 place-items-center rounded-full text-2xl text-white"
+            >✓</span
+          >
+          <h3 class="font-cafe mt-5 text-2xl font-semibold">Table requested</h3>
+          <p id="bk-summary" class="text-cafe-muted mt-3"></p>
+          <p class="text-cafe-muted mt-4 text-sm">
+            We'll confirm by text within the hour. If it's for tonight, ring us
+            on {restaurant.phone}.
+          </p>
+          <button
+            type="button"
+            id="bk-again"
+            class="text-cafe-accent mt-6 text-sm font-semibold underline underline-offset-4"
+          >
+            Make another booking
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer
+    class="border-cafe-line text-cafe-muted border-t py-10 text-center text-sm"
+  >
+    <p class="font-cafe text-cafe-ink text-base">{restaurant.name}</p>
+    <p class="mt-2">{restaurant.address.join(", ")} · {restaurant.phone}</p>
+    <p class="mt-4">
+      <a href="/#work" class="font-semibold underline underline-offset-4">
+        This is a demo — back to the portfolio
+      </a>
+    </p>
+  </footer>
+</Base>
+
+<style>
+  /* Warm light thrown from the bottom of the hero, as if from the fire. */
+  .ember-glow {
+    position: absolute;
+    inset-inline: 0;
+    bottom: -12rem;
+    height: 26rem;
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      color-mix(in srgb, var(--color-cafe-accent) 55%, transparent) 0%,
+      transparent 70%
+    );
+    filter: blur(40px);
+  }
+
+  /* A fine film of noise so the flat colour doesn't band on large screens. */
+  .grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.25;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+</style>
+
+<script>
+  /* ── Open / closed right now ──────────────────────────────────────────── */
+  type Window_ = { index: number; open: number | null; close: number | null };
+
+  const windows: Window_[] = [
+    { index: 1, open: null, close: null },
+    { index: 2, open: 17.5, close: 22 },
+    { index: 3, open: 17.5, close: 22 },
+    { index: 4, open: 17.5, close: 22 },
+    { index: 5, open: 17, close: 23 },
+    { index: 6, open: 12, close: 23 },
+    { index: 0, open: 12, close: 17 },
+  ];
+
+  const now = new Date();
+  const decimalHour = now.getHours() + now.getMinutes() / 60;
+  const today = windows.find((w) => w.index === now.getDay());
+  const isOpen =
+    !!today &&
+    today.open !== null &&
+    today.close !== null &&
+    decimalHour >= today.open &&
+    decimalHour < today.close;
+
+  const badge = document.getElementById("open-now");
+  if (badge) {
+    badge.innerHTML = "";
+    const dot = document.createElement("span");
+    dot.className = `h-2 w-2 rounded-full ${isOpen ? "bg-cafe-accent" : "bg-cafe-muted"}`;
+    badge.append(dot, isOpen ? "Open now" : "Closed right now");
+  }
+
+  const status = document.getElementById("open-status");
+  if (status) status.textContent = isOpen ? "Open now" : "Closed right now";
+
+  /* Highlight today's row in the hours table. */
+  document
+    .querySelector(`tr[data-day="${now.getDay()}"]`)
+    ?.classList.add("font-semibold", "text-cafe-accent");
+
+  /* ── Booking form ─────────────────────────────────────────────────────── */
+  const form = document.getElementById(
+    "booking-form",
+  ) as HTMLFormElement | null;
+  const error = document.getElementById("bk-error");
+  const success = document.getElementById("bk-success");
+  const summary = document.getElementById("bk-summary");
+  const again = document.getElementById("bk-again");
+
+  /* Nobody can book yesterday. */
+  const dateInput = document.getElementById(
+    "bk-date",
+  ) as HTMLInputElement | null;
+  if (dateInput) dateInput.min = new Date().toISOString().slice(0, 10);
+
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!error || !success || !summary) return;
+
+    error.hidden = true;
+
+    const data = new FormData(form);
+    const date = String(data.get("date") || "");
+    const time = String(data.get("time") || "");
+    const people = String(data.get("people") || "");
+    const name = String(data.get("name") || "").trim();
+    const phone = String(data.get("phone") || "").trim();
+
+    if (!date || !time || !name || !phone) {
+      error.textContent =
+        "Please fill in the date, time, your name and a phone number.";
+      error.hidden = false;
+      return;
+    }
+
+    const readable = new Date(`${date}T${time}`).toLocaleString("en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    summary.textContent = `${people} ${people === "1" ? "person" : "people"}, ${readable}, under ${name}.`;
+    form.hidden = true;
+    success.hidden = false;
+    success.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  again?.addEventListener("click", () => {
+    if (!form || !success) return;
+    form.reset();
+    success.hidden = true;
+    form.hidden = false;
+    form.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+</script>

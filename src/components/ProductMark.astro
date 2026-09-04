@@ -1,0 +1,141 @@
+---
+/**
+ * Flat botanical marks for the shop demo, built from ellipses and arcs rather
+ * than photography — a made-up shop has no product photos, and an obviously
+ * illustrated mark is more honest than a stock image pretending to be one.
+ * Deterministic: the same variant always draws the same shape.
+ */
+
+import type { MarkVariant } from "~/data/demo-shop";
+
+interface Props {
+  variant: MarkVariant;
+  /** Leaf/body colour. */
+  tint: string;
+  /** Panel background. */
+  wash: string;
+  class?: string;
+}
+
+const { variant, tint, wash, class: className = "" } = Astro.props;
+
+/** Leaves fanned out along a stem: [x-offset, y, rotation, length, width]. */
+const leafSets: Record<string, number[][]> = {
+  leafy: [
+    [-26, 96, -58, 30, 15],
+    [26, 96, 58, 30, 15],
+    [-30, 66, -42, 34, 16],
+    [30, 66, 42, 34, 16],
+    [-22, 40, -22, 32, 15],
+    [22, 40, 22, 32, 15],
+    [0, 22, 0, 30, 16],
+  ],
+  tall: [
+    [-20, 70, -10, 62, 12],
+    [0, 58, 0, 74, 13],
+    [20, 72, 10, 60, 12],
+    [-34, 92, -20, 44, 10],
+    [34, 92, 20, 44, 10],
+  ],
+  trailing: [
+    [-46, 60, -74, 26, 12],
+    [-34, 88, -62, 24, 11],
+    [-18, 112, -40, 22, 10],
+    [46, 60, 74, 26, 12],
+    [34, 88, 62, 24, 11],
+    [18, 112, 40, 22, 10],
+    [0, 44, 0, 28, 14],
+  ],
+};
+
+const rosette = [
+  [0, 78, 30],
+  [-30, 92, 22],
+  [30, 92, 22],
+  [-18, 66, 18],
+  [18, 66, 18],
+];
+---
+
+<svg
+  viewBox="0 0 200 200"
+  aria-hidden="true"
+  class={className}
+  style={`background:${wash}`}
+>
+  <!-- Soft halo so the mark sits in the panel rather than floating on it. -->
+  <circle cx="100" cy="104" r="74" fill={tint} opacity="0.08"></circle>
+
+  {
+    variant === "round" && (
+      <g>
+        {rosette.map(([cx, cy, r]) => (
+          <circle cx={100 + cx} cy={cy} r={r} fill={tint} opacity="0.85" />
+        ))}
+      </g>
+    )
+  }
+
+  {
+    (variant === "leafy" || variant === "tall" || variant === "trailing") && (
+      <g>
+        <path
+          d={`M100 148 L100 ${variant === "tall" ? 60 : 40}`}
+          stroke={tint}
+          stroke-width="4"
+          stroke-linecap="round"
+          fill="none"
+        />
+        {leafSets[variant].map(([dx, y, rot, rx, ry]) => (
+          <ellipse
+            cx={100 + dx}
+            cy={y}
+            rx={rx}
+            ry={ry}
+            fill={tint}
+            opacity="0.9"
+            transform={`rotate(${rot} ${100 + dx} ${y})`}
+          />
+        ))}
+      </g>
+    )
+  }
+
+  {
+    variant === "can" && (
+      <g fill={tint}>
+        <rect x="62" y="86" width="70" height="60" rx="8" />
+        <path d="M132 100 L166 74 L172 82 L140 110 Z" />
+        <path
+          d="M72 86 C72 62, 112 62, 112 86"
+          fill="none"
+          stroke={tint}
+          stroke-width="8"
+          stroke-linecap="round"
+        />
+      </g>
+    )
+  }
+
+  <!-- Every plant gets a pot; "pot" and "can" variants are the pot alone. -->
+  {
+    variant !== "can" && (
+      <g>
+        <path
+          d="M64 132 L136 132 L126 176 Q125 182 118 182 L82 182 Q75 182 74 176 Z"
+          fill={tint}
+          opacity={variant === "pot" ? "0.9" : "0.55"}
+        />
+        <rect
+          x="58"
+          y="124"
+          width="84"
+          height="14"
+          rx="5"
+          fill={tint}
+          opacity={variant === "pot" ? "1" : "0.7"}
+        />
+      </g>
+    )
+  }
+</svg>
