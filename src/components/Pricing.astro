@@ -1,51 +1,72 @@
 ---
 import { tiers, pricingNote, afterLaunchNote } from "~/data/site";
+import SectionLabel from "./SectionLabel.astro";
 import WhatsAppButton from "./WhatsAppButton.astro";
 ---
 
-<section id="pricing" class="border-line scroll-mt-24 border-b py-20 sm:py-24">
+<!--
+  The one dark band on the page. Prices are the moment a stranger decides
+  whether you are expensive, so they get the weight of a change in ground
+  colour rather than another white card on white.
+-->
+<section
+  id="pricing"
+  class="bg-night text-night-fg scroll-mt-24 py-20 sm:py-28"
+>
   <div class="mx-auto max-w-6xl px-5 sm:px-8">
-    <h2 class="text-3xl font-bold sm:text-4xl">What it costs</h2>
-    <p class="text-muted mt-3 max-w-2xl text-lg">
-      Three packages, each a fixed price. You'll know the total before I start —
-      no hourly billing, no surprise invoice at the end.
-    </p>
+    <SectionLabel
+      number="02"
+      label="Services & pricing"
+      heading="One number, agreed before I start."
+      standfirst="Three packages, each a fixed price. No hourly billing, and no surprise invoice at the end."
+      onDark
+      data-reveal
+    />
 
-    <ul class="mt-12 grid items-start gap-6 lg:grid-cols-3">
+    <ul class="mt-14 grid items-start gap-6 lg:grid-cols-3" data-reveal>
       {
         tiers.map((tier) => (
           <li
             class:list={[
-              "bg-surface relative flex h-full flex-col rounded-[14px] p-7",
+              "relative flex h-full flex-col rounded-[14px] p-8",
               tier.featured
-                ? "border-accent shadow-accent/10 border-2 shadow-lg lg:-mt-3 lg:pt-9 lg:pb-9"
-                : "border-line border",
+                ? "border-accent-on-dark bg-night-surface border"
+                : "border-night-line border",
             ]}
           >
             {tier.featured && (
-              <span class="bg-accent absolute -top-3 left-7 rounded-full px-3 py-1 text-[0.7rem] font-bold tracking-wide text-white uppercase">
+              <span class="bg-accent-on-dark text-night absolute -top-3 left-8 rounded-full px-3 py-1 text-[0.7rem] font-bold tracking-wide uppercase">
                 Most popular
               </span>
             )}
 
-            <h3 class="text-subtle text-lg font-semibold tracking-wide uppercase">
+            <h3 class="text-night-muted text-xs font-semibold tracking-[0.18em] uppercase">
               {tier.name}
             </h3>
 
-            <p class="mt-3 text-4xl font-bold tracking-tight">{tier.price}</p>
-            {tier.priceNote && (
-              <p class="text-subtle mt-1.5 text-[0.8125rem]">
-                {tier.priceNote}
+            {/* Fixed height so the delivery rule lands on the same line in all
+                three cards — only Pro carries a price note, and without this
+                its whole lower half sits lower than its neighbours'. */}
+            <div class="lg:min-h-[10.5rem]">
+              <p class="font-display tabular mt-5 text-5xl leading-none">
+                {tier.price}
               </p>
-            )}
-            <p class="text-muted mt-2">{tier.suits}</p>
 
-            <p class="bg-sunk text-muted mt-4 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium">
+              {tier.priceNote && (
+                <p class="text-night-muted mt-3 text-[0.8125rem]">
+                  {tier.priceNote}
+                </p>
+              )}
+
+              <p class="mt-4 text-[0.9375rem] text-white/80">{tier.suits}</p>
+            </div>
+
+            <p class="text-night-muted border-night-line mt-6 flex items-center gap-2 border-t pt-6 text-sm font-medium">
               <svg
                 aria-hidden="true"
                 viewBox="0 0 20 20"
                 fill="currentColor"
-                class="text-subtle h-4 w-4"
+                class="h-4 w-4"
               >
                 <path
                   fill-rule="evenodd"
@@ -56,14 +77,14 @@ import WhatsAppButton from "./WhatsAppButton.astro";
               {tier.delivery}
             </p>
 
-            <ul class="border-line mt-6 flex-1 space-y-3 border-t pt-6">
+            <ul class="border-night-line mt-6 flex-1 space-y-3 border-t pt-6">
               {tier.features.map((feature) => (
                 <li class="flex items-start gap-2.5 text-[0.9375rem]">
                   <svg
                     aria-hidden="true"
                     viewBox="0 0 20 20"
                     fill="currentColor"
-                    class="text-accent mt-0.5 h-4 w-4 shrink-0"
+                    class="text-accent-on-dark mt-1 h-3.5 w-3.5 shrink-0"
                   >
                     <path
                       fill-rule="evenodd"
@@ -71,7 +92,7 @@ import WhatsAppButton from "./WhatsAppButton.astro";
                       clip-rule="evenodd"
                     />
                   </svg>
-                  <span>{feature}</span>
+                  <span class="text-white/85">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -81,16 +102,20 @@ import WhatsAppButton from "./WhatsAppButton.astro";
     </ul>
 
     <div
-      class="border-line bg-sunk mt-10 flex flex-col items-start gap-5 rounded-[14px] border px-6 py-6 sm:flex-row sm:items-center sm:justify-between"
+      class="border-night-line mt-12 flex flex-col gap-6 border-t pt-8 sm:flex-row sm:items-end sm:justify-between"
+      data-reveal
     >
-      <p class="text-muted text-[0.9375rem]">
-        <strong class="text-fg font-semibold">{pricingNote}</strong><br />
-        {afterLaunchNote}<br />
-        Not sure which one fits? Describe your business and I'll tell you honestly
-        — often it's the cheapest one.
-      </p>
+      <div class="max-w-xl space-y-2 text-[0.9375rem]">
+        <p class="font-semibold">{pricingNote}</p>
+        <p class="text-night-muted">{afterLaunchNote}</p>
+        <p class="text-night-muted">
+          Not sure which one fits? Describe your business and I'll tell you
+          honestly — often it's the cheapest one.
+        </p>
+      </div>
       <WhatsAppButton
         label="Ask which package fits"
+        variant="onDark"
         size="md"
         class="shrink-0"
       />

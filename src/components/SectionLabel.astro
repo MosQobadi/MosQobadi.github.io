@@ -1,0 +1,78 @@
+---
+/**
+ * The editorial device the whole page hangs on: a hairline rule with a
+ * numbered label sitting on it, then the section's real heading.
+ *
+ * It's what turns five stacked blocks into five chapters. Used on every
+ * section, always in the same order, always with the number.
+ */
+
+interface Props {
+  /** "01", "02" … Always two digits; a bare "1" looks like a typo here. */
+  number: string;
+  /** The small letterspaced label on the rule. */
+  label: string;
+  /** The large serif heading under it. */
+  heading: string;
+  /** Optional standfirst under the heading. */
+  standfirst?: string;
+  /** Set on the dark pricing band so the rule and label stay legible. */
+  onDark?: boolean;
+  class?: string;
+}
+
+const {
+  number,
+  label,
+  heading,
+  standfirst,
+  onDark = false,
+  class: className = "",
+} = Astro.props;
+---
+
+<header class={className}>
+  <div
+    class:list={[
+      "flex items-center gap-4 border-t pt-4",
+      onDark ? "border-night-line" : "border-line",
+    ]}
+  >
+    <span
+      class:list={[
+        "font-display text-2xl leading-none",
+        onDark ? "text-accent-on-dark" : "text-accent",
+      ]}>{number}</span
+    >
+    <span
+      class:list={[
+        "text-xs font-semibold tracking-[0.18em] uppercase",
+        onDark ? "text-night-muted" : "text-subtle",
+      ]}
+    >
+      {label}
+    </span>
+  </div>
+
+  <h2
+    class:list={[
+      "font-display mt-8 text-4xl leading-[1.05] sm:text-5xl lg:text-[3.4rem]",
+      onDark ? "text-night-fg" : "text-fg",
+    ]}
+  >
+    {heading}
+  </h2>
+
+  {
+    standfirst && (
+      <p
+        class:list={[
+          "mt-5 max-w-xl text-lg",
+          onDark ? "text-night-muted" : "text-muted",
+        ]}
+      >
+        {standfirst}
+      </p>
+    )
+  }
+</header>

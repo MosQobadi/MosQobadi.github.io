@@ -44,11 +44,15 @@ export const site = {
 /* ── 1. Hero ────────────────────────────────────────────────────────────── */
 
 export const hero = {
-  valueProp:
-    "I build simple, fast websites for local businesses — landing pages, menus and booking forms that work properly on a phone.",
-  /** One short line of reassurance under the headline. Keep it concrete. */
+  /**
+   * Set in the display serif at up to 72px. Keep it to two lines on a desktop
+   * — a four-line serif headline reads as a paragraph, not a statement. The
+   * detail of what that means belongs in `support` underneath.
+   */
+  valueProp: "I build simple, fast websites for local businesses.",
+  /** The specifics the headline no longer has room for. Stay concrete. */
   support:
-    "Fixed price agreed up front. Live in a few days. No monthly fees, no jargon.",
+    "Landing pages, menus and booking forms that work properly on a phone. Fixed price agreed up front, live in a few days, no monthly fees.",
   cta: "Message me on WhatsApp",
   /** Three plain-language reassurances shown as a strip under the CTA. */
   points: [
@@ -75,6 +79,13 @@ export type WorkSample = {
   imageAlt: string;
   /** false = built for a paying client, true = built by me to show the work. */
   isDemo: boolean;
+  /**
+   * Takes the wide feature slot at the top of the section. Exactly one entry
+   * should have it. Put it on whichever sample has the strongest *screenshot* —
+   * that slot is the biggest image on the page, so a placeholder in it does
+   * more damage than the sample's importance does good.
+   */
+  featured?: boolean;
   /** Short list of what's in it, shown as small pills on the card. */
   features: readonly string[];
 };
@@ -102,6 +113,7 @@ export const workSamples: readonly WorkSample[] = [
     imageAlt:
       "The Olive & Ember restaurant demo, showing the header photo and the start of the menu.",
     isDemo: true,
+    featured: true,
     features: ["Menu", "Opening hours", "Map", "Booking form"],
   },
   {

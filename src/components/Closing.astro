@@ -5,113 +5,123 @@ import {
   WHATSAPP_NUMBER,
   whatsappConfigured,
 } from "~/data/site";
+import SectionLabel from "./SectionLabel.astro";
 import WhatsAppButton from "./WhatsAppButton.astro";
 ---
 
-<section
-  id="contact"
-  class="bg-night text-night-fg scroll-mt-24 py-20 sm:py-24"
->
-  <div
-    class="mx-auto grid max-w-6xl gap-14 px-5 sm:px-8 lg:grid-cols-2 lg:gap-20"
-  >
-    <div>
-      <h2 class="text-3xl font-bold sm:text-4xl">{closing.heading}</h2>
-      <p class="text-night-muted mt-4 max-w-lg text-lg">{closing.body}</p>
+<!--
+  Warm wash rather than a second dark band — the prices already used that card,
+  and two dark blocks near each other flatten the rhythm of the page.
+-->
+<section id="contact" class="bg-accent-wash scroll-mt-24 py-20 sm:py-28">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <div class="grid gap-14 lg:grid-cols-[1fr_0.85fr] lg:gap-20">
+      <div data-reveal>
+        <SectionLabel
+          number="04"
+          label="Get started"
+          heading={closing.heading}
+        />
 
-      <div class="mt-8">
-        <WhatsAppButton label={closing.cta} variant="onDark" />
+        <p class="text-muted mt-6 max-w-lg text-lg">{closing.body}</p>
+
+        <div class="mt-9">
+          <WhatsAppButton label={closing.cta} />
+        </div>
+
+        {
+          site.email && (
+            <p class="text-subtle border-line mt-10 border-t pt-6 text-sm">
+              Prefer email?{" "}
+              <a
+                href={`mailto:${site.email}`}
+                class="text-fg hover:text-accent font-medium underline underline-offset-4"
+              >
+                {site.email}
+              </a>
+            </p>
+          )
+        }
       </div>
 
-      {
-        site.email && (
-          <p class="text-night-muted mt-6 text-sm">
-            Prefer email?{" "}
-            <a
-              href={`mailto:${site.email}`}
-              class="text-night-fg font-medium underline underline-offset-4 hover:text-white"
+      <!--
+        A backup for people who freeze at an empty chat box: fill three fields
+        and the button writes the WhatsApp message for them. No server, no form
+        service, nothing to break — it just builds a wa.me link.
+      -->
+      <div
+        class="border-line bg-surface h-fit rounded-[14px] border p-7 shadow-sm"
+        data-reveal
+      >
+        <h3 class="font-display text-2xl">Not sure what to say?</h3>
+        <p class="text-muted mt-2 text-sm">
+          Fill these in and I'll write the message for you — you just hit send.
+        </p>
+
+        <form id="message-builder" class="mt-6 space-y-4" novalidate>
+          <div>
+            <label for="mb-name" class="block text-sm font-medium"
+              >Your name</label
             >
-              {site.email}
-            </a>
-          </p>
-        )
-      }
-    </div>
+            <input
+              id="mb-name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              required
+              class="border-line bg-paper focus:border-accent mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
+              placeholder="Sam"
+            />
+          </div>
 
-    <!--
-      A backup for people who freeze at an empty chat box: fill three fields and
-      the button writes the WhatsApp message for them. No server, no form
-      service, nothing to break — it just builds a wa.me link.
-    -->
-    <div class="rounded-[14px] border border-white/15 bg-white/5 p-7">
-      <h3 class="text-lg font-semibold">Not sure what to say?</h3>
-      <p class="text-night-muted mt-2 text-sm">
-        Fill these in and I'll write the message for you — you just hit send.
-      </p>
+          <div>
+            <label for="mb-business" class="block text-sm font-medium">
+              What's your business?
+            </label>
+            <input
+              id="mb-business"
+              name="business"
+              type="text"
+              required
+              class="border-line bg-paper focus:border-accent mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
+              placeholder="A small pizzeria in town"
+            />
+          </div>
 
-      <form id="message-builder" class="mt-6 space-y-4" novalidate>
-        <div>
-          <label for="mb-name" class="block text-sm font-medium"
-            >Your name</label
+          <div>
+            <label for="mb-need" class="block text-sm font-medium">
+              What do you need? <span class="text-subtle">(optional)</span>
+            </label>
+            <textarea
+              id="mb-need"
+              name="need"
+              rows="3"
+              class="border-line bg-paper focus:border-accent mt-1.5 w-full resize-y rounded-lg border px-3.5 py-2.5"
+              placeholder="Somewhere to put the menu and take table bookings"
+            ></textarea>
+          </div>
+
+          <p
+            id="mb-error"
+            role="alert"
+            hidden
+            class="text-accent text-sm font-medium"
           >
-          <input
-            id="mb-name"
-            name="name"
-            type="text"
-            autocomplete="name"
-            required
-            class="bg-night text-night-fg mt-1.5 w-full rounded-lg border border-white/20 px-3.5 py-2.5 placeholder:text-white/35 focus:border-white/50"
-            placeholder="Sam"
-          />
-        </div>
+          </p>
 
-        <div>
-          <label for="mb-business" class="block text-sm font-medium">
-            What's your business?
-          </label>
-          <input
-            id="mb-business"
-            name="business"
-            type="text"
-            required
-            class="bg-night text-night-fg mt-1.5 w-full rounded-lg border border-white/20 px-3.5 py-2.5 placeholder:text-white/35 focus:border-white/50"
-            placeholder="A small pizzeria in town"
-          />
-        </div>
+          <button
+            type="submit"
+            class="bg-fg hover:bg-accent min-h-11 w-full rounded-full px-6 py-3.5 font-semibold text-white transition-colors"
+          >
+            Write my message
+          </button>
 
-        <div>
-          <label for="mb-need" class="block text-sm font-medium">
-            What do you need? <span class="text-night-muted">(optional)</span>
-          </label>
-          <textarea
-            id="mb-need"
-            name="need"
-            rows="3"
-            class="bg-night text-night-fg mt-1.5 w-full resize-y rounded-lg border border-white/20 px-3.5 py-2.5 placeholder:text-white/35 focus:border-white/50"
-            placeholder="Somewhere to put the menu and take table bookings"
-          ></textarea>
-        </div>
-
-        <p
-          id="mb-error"
-          role="alert"
-          hidden
-          class="text-sm font-medium text-[#ff9d80]"
-        >
-        </p>
-
-        <button
-          type="submit"
-          class="bg-accent hover:bg-accent-bright w-full rounded-full px-6 py-3.5 font-semibold text-white transition-colors"
-        >
-          Write my message
-        </button>
-
-        <p class="text-night-muted text-xs">
-          This opens WhatsApp with the message already typed. Nothing is sent
-          until you press send there.
-        </p>
-      </form>
+          <p class="text-subtle text-xs">
+            This opens WhatsApp with the message already typed. Nothing is sent
+            until you press send there.
+          </p>
+        </form>
+      </div>
     </div>
   </div>
 </section>

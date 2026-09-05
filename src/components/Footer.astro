@@ -4,11 +4,13 @@ import { site } from "~/data/site";
 const year = new Date().getFullYear();
 ---
 
-<footer class="border-line border-t py-10">
+<footer class="border-line border-t py-12">
   <div
-    class="text-subtle mx-auto flex max-w-6xl flex-col gap-4 px-5 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-8"
+    class="text-subtle mx-auto flex max-w-6xl flex-col gap-4 px-5 text-sm sm:flex-row sm:items-baseline sm:justify-between sm:px-8"
   >
-    <p>© {year} {site.name}</p>
-    <p>Built as a static site — which is why it loaded this fast.</p>
+    <p class="font-display text-fg text-lg">{site.name}</p>
+    <p>
+      Built as a static site — which is why it loaded this fast. © {year}
+    </p>
   </div>
 </footer>

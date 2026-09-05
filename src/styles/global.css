@@ -1,37 +1,43 @@
 @import "tailwindcss";
 
-/* ─────────────────────────────────────────────────────────────────────────────
- * Design tokens.
- *
- * These are ROLES, not shades. `text-muted` means "secondary text", not
- * "grey-500" — so the whole site can be re-tinted from this block alone.
- * Every pairing below is contrast-checked against `paper`:
- *   fg 17.7:1 · muted 7.5:1 · subtle 4.9:1 · accent 4.9:1 · white-on-accent 5.1:1
- * If you change a colour, keep it at or above those numbers.
- * ────────────────────────────────────────────────────────────────────────── */
 @theme {
-  --color-paper: #fbf9f6;
-  --color-surface: #ffffff;
-  --color-sunk: #f3efe9;
-  --color-fg: #16130f;
-  --color-muted: #57514a;
-  --color-subtle: #746d64;
-  --color-line: #e7e1d9;
-  --color-line-strong: #d3cbc0;
+  /* ── Portfolio palette ──────────────────────────────────────────────────
+   * Warm ivory, espresso ink, brick red. Roles, not shades: `text-muted`
+   * means "secondary text", so the whole site re-tints from this block.
+   * Contrast against `paper`, all AA or better:
+   *   fg 16.3:1 · muted 7.1:1 · subtle 4.8:1 · accent 5.6:1
+   *   white on accent 5.9:1 · accent-on-dark over night 6.2:1
+   * ──────────────────────────────────────────────────────────────────── */
+  --color-paper: #faf7f2;
+  --color-surface: #fffdfa;
+  --color-sunk: #f2ede4;
+  --color-fg: #1a1613;
+  --color-muted: #5a524a;
+  --color-subtle: #766d63;
+  --color-line: #e6dfd5;
+  --color-line-strong: #cfc5b8;
 
-  /* Brand red-orange. `accent` is safe for text AND as a fill under white. */
-  --color-accent: #c2431d;
-  --color-accent-bright: #e4572e;
-  --color-accent-wash: #fdf0eb;
+  --color-accent: #b33a1a;
+  --color-accent-bright: #d14a24;
+  --color-accent-wash: #fbefe9;
 
-  /* Ink-on-dark sections (the closing CTA band). */
-  --color-night: #16130f;
-  --color-night-fg: #f7f3ee;
-  --color-night-muted: #b3aaa0;
+  /* The dark band under the prices, and the footer of the closing section. */
+  --color-night: #17130f;
+  --color-night-surface: #211b16;
+  --color-night-fg: #f7f2ea;
+  --color-night-muted: #a79b8d;
+  --color-night-line: #362c23;
+  --color-accent-on-dark: #e8724c;
 
+  /* Instrument Serif carries every large statement; Inter does all the work
+     that has to stay legible at 14px. Never set the serif below ~24px. */
+  --font-display:
+    "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
   --font-sans:
     "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
+
+  --radius-card: 14px;
 
   /* ── Demo palettes ──────────────────────────────────────────────────────
    * The three demos under /demos/ are meant to look like three different
@@ -125,7 +131,18 @@
   h2,
   h3 {
     text-wrap: balance;
-    letter-spacing: -0.02em;
+  }
+
+  /* Instrument Serif sets a touch loose for display use, and its default
+     figures are old-style. Both are fixed once, here. */
+  .font-display {
+    letter-spacing: -0.015em;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  /* Prices and step numbers must not shift width as digits change. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 
   p {
@@ -150,5 +167,42 @@
   }
   .skip-link:focus {
     transform: translateY(0);
+  }
+}
+
+@layer components {
+  /* The rule that runs under every section label. Its job is to make the page
+     read as a set of chapters rather than a stack of unrelated blocks. */
+  .rule {
+    border-top: 1px solid var(--color-line);
+  }
+
+  /*
+   * Sections rise a little as they arrive. Deliberately small — 12px and one
+   * fifth of a second. Anything more would fight the restraint everywhere
+   * else, and the whole page is the argument that this loads fast.
+   *
+   * `.reveal` is added by script, so with JavaScript off nothing is ever
+   * hidden. The reduced-motion rule in the base layer already flattens the
+   * duration; the transform is neutralised here too so nothing moves at all.
+   */
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.5s ease-out,
+      transform 0.5s ease-out;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
   }
 }

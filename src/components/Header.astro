@@ -10,18 +10,17 @@ const links = [
 ---
 
 <header
-  class="border-line/80 bg-paper/85 sticky top-0 z-50 border-b backdrop-blur-md"
+  class="border-line/70 bg-paper/80 sticky top-0 z-50 border-b backdrop-blur-md"
 >
   <div
-    class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:px-8"
+    class="mx-auto flex h-[4.5rem] max-w-6xl items-center justify-between gap-4 px-5 sm:px-8"
   >
-    <a href="/" class="flex items-center gap-2.5 font-semibold tracking-tight">
-      <span
-        aria-hidden="true"
-        class="bg-accent grid h-8 w-8 place-items-center rounded-lg text-[0.9rem] font-bold text-white"
-        >MQ</span
-      >
-      <span class="hidden sm:inline">{site.name}</span>
+    <!-- The name set in the display serif, with the accent carried by a single
+         mark rather than a coloured tile. Quieter, and it reads as a wordmark. -->
+    <a href="/" class="group flex items-baseline gap-2">
+      <span class="font-display text-xl leading-none">{site.name}</span>
+      <span aria-hidden="true" class="bg-accent h-1.5 w-1.5 rounded-full"
+      ></span>
     </a>
 
     <nav aria-label="Sections" class="flex items-center gap-1 sm:gap-2">
@@ -29,21 +28,26 @@ const links = [
         links.map((link) => (
           <a
             href={link.href}
-            class="text-muted hover:bg-sunk hover:text-fg rounded-full px-3 py-2 text-sm font-medium transition-colors"
+            class="text-muted hover:text-fg hidden rounded-full px-3 py-2 text-sm font-medium transition-colors sm:inline-block"
           >
             {link.label}
           </a>
         ))
       }
       {
-        /* The unconfigured warning is loud by design, but it would blow the
-           header apart — the hero and the closing band already carry it. */
+        /*
+         * Shown at every width on purpose. Most of the traffic arrives from a
+         * phone, where the nav links above are hidden and this is the only
+         * action in the header — so hiding it on mobile would remove the
+         * button from exactly the people most likely to press it. It fits
+         * beside the wordmark down to 320px.
+         *
+         * The unconfigured warning state is the exception: it is loud by
+         * design and would blow the header apart, and the hero and closing
+         * band already carry it.
+         */
         whatsappConfigured && (
-          <WhatsAppButton
-            label="Message me"
-            size="md"
-            class="ml-1 hidden md:inline-flex"
-          />
+          <WhatsAppButton label="Message me" size="md" class="ml-1" />
         )
       }
     </nav>
