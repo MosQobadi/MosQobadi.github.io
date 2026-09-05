@@ -37,7 +37,7 @@
    * The three demos under /demos/ are meant to look like three different
    * businesses, so each gets its own token set rather than reusing the
    * portfolio's. Prefixes keep them out of each other's way: `bg-cafe-paper`,
-   * `text-trade-ink`, `bg-shop-accent`. Same contrast rules as above —
+   * `text-trade-ink`, `bg-gym-lime`. Same contrast rules as above —
    * every accent below clears 4.5:1 under white text.
    * ──────────────────────────────────────────────────────────────────── */
 
@@ -59,13 +59,17 @@
   --color-trade-accent: #0b63a8;
   --color-trade-urgent: #c2410c;
 
-  /* Fernwood Supply — shop */
-  --color-shop-paper: #fdfdfc;
-  --color-shop-sunk: #f4f4f1;
-  --color-shop-ink: #14181a;
-  --color-shop-muted: #4f5b57;
-  --color-shop-line: #e4e4e1;
-  --color-shop-accent: #1f6f4a;
+  /* Cadence Fitness — gym.
+   * The lime is a FILL only: white on it is unreadable, but the near-black ink
+   * on it is 14.7:1. `gym-accent` is the text-safe green for links and buttons
+   * that carry white type (7.1:1). Don't swap their jobs. */
+  --color-gym-paper: #f6f7f5;
+  --color-gym-surface: #ffffff;
+  --color-gym-ink: #0e1116;
+  --color-gym-muted: #4d545b;
+  --color-gym-line: #e0e3e0;
+  --color-gym-accent: #3f6212;
+  --color-gym-lime: #c6f24e;
 
   --font-cafe: "Fraunces Variable", ui-serif, Georgia, serif;
   --font-trade:

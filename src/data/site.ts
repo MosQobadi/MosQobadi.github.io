@@ -8,7 +8,7 @@
 import topoilShot from "~/assets/work/topoil.png";
 import restaurantShot from "~/assets/work/restaurant.png";
 import plumberShot from "~/assets/work/plumber.png";
-import shopShot from "~/assets/work/shop.png";
+import gymShot from "~/assets/work/gym.png";
 
 /**
  * WhatsApp number in full international format: country code first, digits
@@ -36,7 +36,7 @@ export const site = {
   /** Shown in the browser tab and as the search-result title. */
   title: "Websites for local businesses",
   description:
-    "I build simple, fast websites for local businesses — landing pages, booking sites and small online shops. Fixed prices, delivered in days.",
+    "I build simple, fast websites for local businesses — landing pages, menus and booking forms. Fixed prices, delivered in days.",
   /** Used for the footer line only. Leave as "" to hide it. */
   email: "mos.qobadi@gmail.com",
 } as const;
@@ -45,7 +45,7 @@ export const site = {
 
 export const hero = {
   valueProp:
-    "I build simple, fast websites for local businesses — landing pages, booking sites, small online shops.",
+    "I build simple, fast websites for local businesses — landing pages, menus and booking forms that work properly on a phone.",
   /** One short line of reassurance under the headline. Keep it concrete. */
   support:
     "Fixed price agreed up front. Live in a few days. No monthly fees, no jargon.",
@@ -116,19 +116,19 @@ export const workSamples: readonly WorkSample[] = [
     features: ["Services & prices", "Callback form", "Service area", "Reviews"],
   },
   {
-    name: "Fernwood Supply",
+    name: "Cadence Fitness",
     problem:
-      "A small shop taking orders through DMs and losing track — so there's a proper product grid, a cart and a checkout that collects the order in one go.",
-    href: "/demos/shop/",
-    image: shopShot,
+      "A studio whose class times lived in an Instagram story nobody could find — so the week's timetable is the first thing on the page, and booking a free trial is right under it.",
+    href: "/demos/gym/",
+    image: gymShot,
     imageAlt:
-      "The Fernwood Supply shop demo, showing a grid of plant products with add-to-cart buttons.",
+      "The Cadence Fitness demo, showing the weekly class timetable with today's column picked out.",
     isDemo: true,
     features: [
-      "Product grid",
-      "Working cart",
-      "Checkout flow",
-      "Order summary",
+      "Class timetable",
+      "Trainers",
+      "Membership prices",
+      "Trial booking",
     ],
   },
 ] as const;
@@ -138,6 +138,8 @@ export const workSamples: readonly WorkSample[] = [
 export type Tier = {
   name: string;
   price: string;
+  /** Only where the price is open-ended — says plainly what pushes it up. */
+  priceNote?: string;
   /** One line under the price saying who it suits. */
   suits: string;
   delivery: string;
@@ -156,37 +158,52 @@ export const tiers: readonly Tier[] = [
       "1-page site (home, about, services, contact)",
       "Mobile-friendly design",
       "Free hosting setup",
+      "Custom domain setup (at cost)",
     ],
   },
   {
     name: "Business",
     price: "$280",
-    suits: "A proper little website with a menu or a service list.",
+    suits:
+      "A proper little website with a menu, a price list or a service page.",
     delivery: "5-day delivery",
     featured: true,
     features: [
-      "Up to 5 pages (home, about, services, menu/products, contact)",
+      "Up to 5 pages (home, about, services, menu/prices, contact)",
       "Contact form",
       "Google Maps integration",
       "Free hosting setup",
+      "Custom domain setup (at cost)",
     ],
   },
   {
     name: "Pro",
     price: "$550+",
-    suits: "You need people to book you or buy from you on the site.",
+    priceNote:
+      "More than five pages, or a second language, adds to this — quoted before I start.",
+    suits:
+      "People need to book you, and you would rather not write the words yourself.",
     delivery: "7–10 day delivery",
     features: [
       "Everything in Business",
-      "Booking system or product/shop page",
-      "Custom domain setup (at cost)",
+      "Booking form — date, time and details straight to your phone",
+      "I write the words, from one phone call",
+      "Google Business Profile set up (Maps, hours, photos)",
       "30-day priority support after launch",
     ],
   },
 ] as const;
 
 export const pricingNote =
-  "All prices in Canadian dollars. All packages: 50% deposit to start, 50% on delivery.";
+  "All prices in Canadian dollars. Every package: 50% deposit to start, 50% on delivery.";
+
+/**
+ * Answers the question that arrives three months after launch: "the menu
+ * changed, what do I do?" Keeping it wordless about the amount is deliberate —
+ * put your own number in once you know what the work actually takes.
+ */
+export const afterLaunchNote =
+  "No monthly fees, ever. Changes later — new prices, a new menu, an extra page — are quoted per job before I touch anything.";
 
 /* ── 4. How it works ────────────────────────────────────────────────────── */
 

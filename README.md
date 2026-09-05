@@ -61,7 +61,7 @@ pnpm thumbnails                 # in another terminal
 
 It drives headless Chrome (already on the machine — no Playwright to install)
 and downsamples from 2x, so the cards stay sharp on a phone. Add names to do a
-subset: `pnpm thumbnails shop plumber`.
+subset: `pnpm thumbnails gym plumber`.
 
 > **The Top Oil card is a placeholder.** `topoil.ir` refused a TLS handshake from
 > the machine this was built on, so rather than ship a screenshot of a Chrome
@@ -82,24 +82,25 @@ work — the honesty is the point, and the card labels itself from that flag.
 
 Three fictional businesses under `/demos/`, each a single self-contained file:
 
-| Page                                                   | Business           | What it shows                                                           |
-| ------------------------------------------------------ | ------------------ | ----------------------------------------------------------------------- |
-| [`restaurant.astro`](src/pages/demos/restaurant.astro) | Olive & Ember      | Menu, opening hours with a live open/closed badge, map, booking form    |
-| [`plumber.astro`](src/pages/demos/plumber.astro)       | Northgate Plumbing | Services, published prices, coverage area, reviews, callback form       |
-| [`shop.astro`](src/pages/demos/shop.astro)             | Fernwood Supply    | Product grid with filters, basket that survives a reload, checkout flow |
+| Page                                                   | Business           | What it shows                                                         |
+| ------------------------------------------------------ | ------------------ | --------------------------------------------------------------------- |
+| [`restaurant.astro`](src/pages/demos/restaurant.astro) | Olive & Ember      | Menu, opening hours with a live open/closed badge, map, booking form  |
+| [`plumber.astro`](src/pages/demos/plumber.astro)       | Northgate Plumbing | Services, published prices, coverage area, reviews, callback form     |
+| [`gym.astro`](src/pages/demos/gym.astro)               | Cadence Fitness    | Weekly class timetable, today picked out, coaches, free-trial booking |
 
 Each demo owns its content in its own frontmatter, so a page can be copied out
 and re-pointed at a real client without untangling it from the rest of the site.
 Each one also carries a sticky banner saying it's a demo — they're labelled as
 self-initiated work everywhere they appear.
 
-The shop's catalogue is the one exception: it sits in
-[`src/data/demo-shop.ts`](src/data/demo-shop.ts) because the cart script needs
-the same prices the grid renders.
+The gym's timetable is the one exception: it sits in
+[`src/data/demo-gym.ts`](src/data/demo-gym.ts) because the script that picks out
+today's column reads the same schedule the grid renders.
 
 **None of the demo forms send anything anywhere.** They validate, then show you
-what would happen next. The shop's checkout deliberately asks for no card
-details at all — a real build hands off to Stripe at that point.
+what would happen next — which matches what is actually on offer: booking
+_request_ forms that reach the owner's phone, with the owner confirming. No
+payment processing, no checkout, on any of them.
 
 ---
 
@@ -107,7 +108,7 @@ details at all — a real build hands off to Stripe at that point.
 
 All colour lives as tokens at the top of
 [`src/styles/global.css`](src/styles/global.css) — the portfolio's palette plus
-one set per demo (`cafe-*`, `trade-*`, `shop-*`). They're roles, not shades:
+one set per demo (`cafe-*`, `trade-*`, `gym-*`). They're roles, not shades:
 `text-muted` means "secondary text". Every accent is contrast-checked at 4.5:1 or
 better under white text; if you re-tint anything, keep it there.
 

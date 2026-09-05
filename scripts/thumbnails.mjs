@@ -8,7 +8,7 @@
  * the cards stay sharp on a phone. Chrome is used directly rather than
  * Playwright — it's already on the machine, and this runs about twice a year.
  *
- * Pass names to do a subset:  node scripts/thumbnails.mjs shop plumber
+ * Pass names to do a subset:  node scripts/thumbnails.mjs gym plumber
  */
 
 import { execFile } from "node:child_process";
@@ -28,13 +28,13 @@ const SCALE = 2;
 
 /**
  * `url` may be absolute (an external site) or a path on the preview server.
- * Anchors are how we choose what the shot frames — the shop's grid matters
+ * Anchors are how we choose what the shot frames — the gym's timetable matters
  * more than its hero.
  */
 const targets = {
   restaurant: "/demos/restaurant/",
   plumber: "/demos/plumber/",
-  shop: "/demos/shop/#shop",
+  gym: "/demos/gym/#timetable",
   topoil: "https://topoil.ir/en",
 };
 
