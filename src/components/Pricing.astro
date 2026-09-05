@@ -1,121 +1,265 @@
 ---
-import { tiers, pricingNote, afterLaunchNote } from "~/data/site";
+import { content, tierMeta, tierOrder, workMedia } from "~/data";
+import type { TierId } from "~/data";
+import type { Locale } from "~/i18n/config";
 import SectionLabel from "./SectionLabel.astro";
 import WhatsAppButton from "./WhatsAppButton.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = content[locale].pricing;
+const samples = content[locale].work.samples;
+
+/*
+ * The three website packages sit in a row; the custom track gets its own wide
+ * card underneath. Splitting them is the point — four equal columns would read
+ * as "four sizes of website", which is exactly the impression the capabilities
+ * section above just spent a paragraph correcting.
+ */
+const packageIds = tierOrder.filter((id) => !tierMeta[id].isCustom);
+const customIds = tierOrder.filter((id) => tierMeta[id].isCustom);
+
+/** The demo that shows what a package produces, if one has been built yet. */
+function example(id: TierId) {
+  const workId = tierMeta[id].example;
+  if (!workId) return null;
+  return { href: workMedia[workId].href, name: samples[workId].name };
+}
 ---
 
-<!--
-  The one dark band on the page. Prices are the moment a stranger decides
-  whether you are expensive, so they get the weight of a change in ground
-  colour rather than another white card on white.
--->
-<section
-  id="pricing"
-  class="bg-night text-night-fg scroll-mt-24 py-20 sm:py-28"
->
+<section id="pricing" class="border-line scroll-mt-24 border-b py-20 sm:py-28">
   <div class="mx-auto max-w-6xl px-5 sm:px-8">
     <SectionLabel
-      number="02"
-      label="Services & pricing"
-      heading="One number, agreed before I start."
-      standfirst="Three packages, each a fixed price. No hourly billing, and no surprise invoice at the end."
-      onDark
+      number="03"
+      label={t.label}
+      heading={t.heading}
+      standfirst={t.standfirst}
       data-reveal
     />
 
-    <ul class="mt-14 grid items-start gap-6 lg:grid-cols-3" data-reveal>
+    <ul class="mt-12 grid items-start gap-5 lg:grid-cols-3" data-reveal>
       {
-        tiers.map((tier) => (
-          <li
-            class:list={[
-              "relative flex h-full flex-col rounded-[14px] p-8",
-              tier.featured
-                ? "border-accent-on-dark bg-night-surface border"
-                : "border-night-line border",
-            ]}
-          >
-            {tier.featured && (
-              <span class="bg-accent-on-dark text-night absolute -top-3 left-8 rounded-full px-3 py-1 text-[0.7rem] font-bold tracking-wide uppercase">
-                Most popular
-              </span>
-            )}
-
-            <h3 class="text-night-muted text-xs font-semibold tracking-[0.18em] uppercase">
-              {tier.name}
-            </h3>
-
-            {/* Fixed height so the delivery rule lands on the same line in all
-                three cards — only Pro carries a price note, and without this
-                its whole lower half sits lower than its neighbours'. */}
-            <div class="lg:min-h-[10.5rem]">
-              <p class="font-display tabular mt-5 text-5xl leading-none">
-                {tier.price}
-              </p>
-
-              {tier.priceNote && (
-                <p class="text-night-muted mt-3 text-[0.8125rem]">
-                  {tier.priceNote}
-                </p>
+        packageIds.map((id) => {
+          const tier = t.tiers[id];
+          const meta = tierMeta[id];
+          const link = example(id);
+          return (
+            <li
+              class:list={[
+                "card relative flex h-full flex-col p-7",
+                meta.featured &&
+                  "border-accent shadow-[0_20px_50px_-24px_var(--color-accent)]",
+              ]}
+            >
+              {meta.featured && (
+                <span class="eyebrow bg-accent text-accent-fg absolute -top-3 left-7 rounded-full px-3 py-1 text-[0.65rem]">
+                  {t.popular}
+                </span>
               )}
 
-              <p class="mt-4 text-[0.9375rem] text-white/80">{tier.suits}</p>
-            </div>
+              <h3 class="eyebrow text-subtle">{tier.name}</h3>
 
-            <p class="text-night-muted border-night-line mt-6 flex items-center gap-2 border-t pt-6 text-sm font-medium">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                class="h-4 w-4"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .3.16.56.42.68l3 1.5a.75.75 0 1 0 .66-1.34l-2.58-1.3V5Z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-              {tier.delivery}
-            </p>
+              {/* Fixed height so the delivery rule lands on the same line in
+                  all three cards — only Pro carries a price note, and without
+                  this its whole lower half sits lower than its neighbours'. */}
+              <div class="lg:min-h-[9.5rem]">
+                <p class="display tabular mt-4 text-[2.75rem]">{tier.price}</p>
 
-            <ul class="border-night-line mt-6 flex-1 space-y-3 border-t pt-6">
-              {tier.features.map((feature) => (
-                <li class="flex items-start gap-2.5 text-[0.9375rem]">
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    class="text-accent-on-dark mt-1 h-3.5 w-3.5 shrink-0"
+                {tier.priceNote && (
+                  <p class="text-subtle mt-3 text-[0.8125rem] leading-relaxed">
+                    {tier.priceNote}
+                  </p>
+                )}
+
+                <p class="text-muted mt-3 text-[0.9375rem] leading-relaxed">
+                  {tier.suits}
+                </p>
+              </div>
+
+              <p class="text-muted border-line mt-6 flex items-center gap-2 border-t pt-5 font-mono text-xs">
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  class="h-4 w-4"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .3.16.56.42.68l3 1.5a.75.75 0 1 0 .66-1.34l-2.58-1.3V5Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                {tier.delivery}
+              </p>
+
+              <ul class="border-line mt-5 flex-1 space-y-3 border-t pt-5">
+                {tier.features.map((feature) => (
+                  <li class="text-muted flex items-start gap-2.5 text-[0.9375rem]">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      class="text-accent mt-[0.2rem] h-4 w-4 shrink-0"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.79 6.8-6.79a1 1 0 0 1 1.4 0Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+
+              {/*
+               * The proof that sits under the price. A package with a live
+               * example beside it is a different proposition from a package
+               * with a number and a list, so when one hasn't been built yet
+               * the card says so plainly instead of linking nowhere.
+               */}
+              <div class="border-line mt-6 border-t pt-5">
+                {link ? (
+                  <a
+                    href={link.href}
+                    class="text-accent group inline-flex items-center gap-1.5 text-[0.9375rem] font-medium"
                   >
-                    <path
-                      fill-rule="evenodd"
-                      d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.79 6.8-6.79a1 1 0 0 1 1.4 0Z"
-                      clip-rule="evenodd"
+                    {t.exampleLink}
+                    <span class="text-subtle font-normal">— {link.name}</span>
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      class="h-4 w-4 transition-transform group-hover:translate-x-1"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M3 10a.75.75 0 0 1 .75-.75h10.19L10.7 6.28a.75.75 0 1 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l3.24-2.97H3.75A.75.75 0 0 1 3 10Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </a>
+                ) : (
+                  <span class="text-subtle inline-flex items-center gap-2 font-mono text-xs">
+                    <span
+                      aria-hidden="true"
+                      class="bg-line-strong h-1.5 w-1.5 rounded-full"
                     />
-                  </svg>
-                  <span class="text-white/85">{feature}</span>
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))
+                    {t.examplePending}
+                  </span>
+                )}
+              </div>
+            </li>
+          );
+        })
       }
     </ul>
 
+    {
+      customIds.map((id) => {
+        const tier = t.tiers[id];
+        const link = example(id);
+        return (
+          <div
+            class="card bg-canvas-alt mt-5 grid gap-8 p-7 sm:p-9 lg:grid-cols-[1fr_1.15fr]"
+            data-reveal
+          >
+            <div>
+              <h3 class="eyebrow text-subtle">{tier.name}</h3>
+              <p class="display mt-4 text-[2.25rem]">{tier.price}</p>
+              <p class="text-muted mt-3 text-[0.9375rem] leading-relaxed">
+                {tier.suits}
+              </p>
+              {tier.priceNote && (
+                <p class="text-subtle mt-3 text-[0.8125rem] leading-relaxed">
+                  {tier.priceNote}
+                </p>
+              )}
+              <p class="text-muted border-line mt-6 flex items-center gap-2 border-t pt-5 font-mono text-xs">
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  class="h-4 w-4"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .3.16.56.42.68l3 1.5a.75.75 0 1 0 .66-1.34l-2.58-1.3V5Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                {tier.delivery}
+              </p>
+            </div>
+
+            <div class="flex flex-col">
+              <ul class="grid flex-1 gap-3 sm:grid-cols-2">
+                {tier.features.map((feature) => (
+                  <li class="text-muted flex items-start gap-2.5 text-[0.9375rem]">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      class="text-accent mt-[0.2rem] h-4 w-4 shrink-0"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.79 6.8-6.79a1 1 0 0 1 1.4 0Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+
+              {link && (
+                <div class="border-line mt-6 border-t pt-5">
+                  <a
+                    href={link.href}
+                    target={link.href.startsWith("http") ? "_blank" : null}
+                    rel={link.href.startsWith("http") ? "noopener" : null}
+                    class="text-accent group inline-flex items-center gap-1.5 text-[0.9375rem] font-medium"
+                  >
+                    {t.exampleLink}
+                    <span class="text-subtle font-normal">— {link.name}</span>
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      class="h-4 w-4 transition-transform group-hover:translate-x-1"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M3 10a.75.75 0 0 1 .75-.75h10.19L10.7 6.28a.75.75 0 1 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l3.24-2.97H3.75A.75.75 0 0 1 3 10Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })
+    }
+
     <div
-      class="border-night-line mt-12 flex flex-col gap-6 border-t pt-8 sm:flex-row sm:items-end sm:justify-between"
+      class="border-line mt-12 flex flex-col gap-6 border-t pt-8 sm:flex-row sm:items-end sm:justify-between"
       data-reveal
     >
-      <div class="max-w-xl space-y-2 text-[0.9375rem]">
-        <p class="font-semibold">{pricingNote}</p>
-        <p class="text-night-muted">{afterLaunchNote}</p>
-        <p class="text-night-muted">
-          Not sure which one fits? Describe your business and I'll tell you
-          honestly — often it's the cheapest one.
-        </p>
+      <div class="text-muted max-w-xl space-y-2 text-[0.9375rem]">
+        <p class="text-fg font-medium">{t.note}</p>
+        <p>{t.afterLaunch}</p>
+        <p>{t.help}</p>
       </div>
       <WhatsAppButton
-        label="Ask which package fits"
-        variant="onDark"
+        locale={locale}
+        label={t.cta}
+        variant="outline"
         size="md"
         class="shrink-0"
       />

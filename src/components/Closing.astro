@@ -1,38 +1,47 @@
 ---
-import {
-  closing,
-  site,
-  WHATSAPP_NUMBER,
-  whatsappConfigured,
-} from "~/data/site";
+import { content, site, WHATSAPP_NUMBER, whatsappConfigured } from "~/data";
+import type { Locale } from "~/i18n/config";
 import SectionLabel from "./SectionLabel.astro";
 import WhatsAppButton from "./WhatsAppButton.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = content[locale].closing;
+
+/*
+ * Only the strings the browser script needs. Passing the whole content object
+ * through `define:vars` would serialise every word of the page into the HTML a
+ * second time.
+ */
+const strings = {
+  errorRequired: t.form.errorRequired,
+  errorUnconfigured: t.form.errorUnconfigured,
+  messageIntro: t.form.messageIntro,
+  messageBusiness: t.form.messageBusiness,
+  messageNeed: t.form.messageNeed,
+  messageAsk: t.form.messageAsk,
+};
 ---
 
-<!--
-  Warm wash rather than a second dark band — the prices already used that card,
-  and two dark blocks near each other flatten the rhythm of the page.
--->
-<section id="contact" class="bg-accent-wash scroll-mt-24 py-20 sm:py-28">
+<section id="contact" class="scroll-mt-24 py-20 sm:py-28">
   <div class="mx-auto max-w-6xl px-5 sm:px-8">
-    <div class="grid gap-14 lg:grid-cols-[1fr_0.85fr] lg:gap-20">
+    <div class="grid gap-12 lg:grid-cols-[1fr_0.85fr] lg:gap-16">
       <div data-reveal>
-        <SectionLabel
-          number="04"
-          label="Get started"
-          heading={closing.heading}
-        />
+        <SectionLabel number="05" label={t.label} heading={t.heading} />
 
-        <p class="text-muted mt-6 max-w-lg text-lg">{closing.body}</p>
+        <p class="text-muted mt-6 max-w-lg text-lg leading-relaxed">{t.body}</p>
 
         <div class="mt-9">
-          <WhatsAppButton label={closing.cta} />
+          <WhatsAppButton locale={locale} label={t.cta} />
         </div>
 
         {
           site.email && (
             <p class="text-subtle border-line mt-10 border-t pt-6 text-sm">
-              Prefer email?{" "}
+              {t.emailPrefix}{" "}
               <a
                 href={`mailto:${site.email}`}
                 class="text-fg hover:text-accent font-medium underline underline-offset-4"
@@ -49,19 +58,14 @@ import WhatsAppButton from "./WhatsAppButton.astro";
         and the button writes the WhatsApp message for them. No server, no form
         service, nothing to break — it just builds a wa.me link.
       -->
-      <div
-        class="border-line bg-surface h-fit rounded-[14px] border p-7 shadow-sm"
-        data-reveal
-      >
-        <h3 class="font-display text-2xl">Not sure what to say?</h3>
-        <p class="text-muted mt-2 text-sm">
-          Fill these in and I'll write the message for you — you just hit send.
-        </p>
+      <div class="card h-fit p-7" data-reveal>
+        <h3 class="display-sm text-xl">{t.form.heading}</h3>
+        <p class="text-muted mt-2 text-sm leading-relaxed">{t.form.intro}</p>
 
         <form id="message-builder" class="mt-6 space-y-4" novalidate>
           <div>
             <label for="mb-name" class="block text-sm font-medium"
-              >Your name</label
+              >{t.form.name}</label
             >
             <input
               id="mb-name"
@@ -69,36 +73,36 @@ import WhatsAppButton from "./WhatsAppButton.astro";
               type="text"
               autocomplete="name"
               required
-              class="border-line bg-paper focus:border-accent mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
-              placeholder="Sam"
+              class="border-line bg-canvas focus:border-accent mt-1.5 w-full rounded-lg border px-3.5 py-2.5 transition-colors"
+              placeholder={t.form.namePlaceholder}
             />
           </div>
 
           <div>
-            <label for="mb-business" class="block text-sm font-medium">
-              What's your business?
-            </label>
+            <label for="mb-business" class="block text-sm font-medium"
+              >{t.form.business}</label
+            >
             <input
               id="mb-business"
               name="business"
               type="text"
               required
-              class="border-line bg-paper focus:border-accent mt-1.5 w-full rounded-lg border px-3.5 py-2.5"
-              placeholder="A small pizzeria in town"
+              class="border-line bg-canvas focus:border-accent mt-1.5 w-full rounded-lg border px-3.5 py-2.5 transition-colors"
+              placeholder={t.form.businessPlaceholder}
             />
           </div>
 
           <div>
             <label for="mb-need" class="block text-sm font-medium">
-              What do you need? <span class="text-subtle">(optional)</span>
+              {t.form.need}{" "}
+              <span class="text-subtle font-normal">{t.form.needOptional}</span>
             </label>
             <textarea
               id="mb-need"
               name="need"
               rows="3"
-              class="border-line bg-paper focus:border-accent mt-1.5 w-full resize-y rounded-lg border px-3.5 py-2.5"
-              placeholder="Somewhere to put the menu and take table bookings"
-            ></textarea>
+              class="border-line bg-canvas focus:border-accent mt-1.5 w-full resize-y rounded-lg border px-3.5 py-2.5 transition-colors"
+              placeholder={t.form.needPlaceholder}></textarea>
           </div>
 
           <p
@@ -111,14 +115,13 @@ import WhatsAppButton from "./WhatsAppButton.astro";
 
           <button
             type="submit"
-            class="bg-fg hover:bg-accent min-h-11 w-full rounded-full px-6 py-3.5 font-semibold text-white transition-colors"
+            class="bg-fg text-canvas hover:bg-accent hover:text-accent-fg min-h-11 w-full rounded-full px-6 py-3 font-medium transition-colors"
           >
-            Write my message
+            {t.form.submit}
           </button>
 
-          <p class="text-subtle text-xs">
-            This opens WhatsApp with the message already typed. Nothing is sent
-            until you press send there.
+          <p class="text-subtle text-xs leading-relaxed">
+            {t.form.reassurance}
           </p>
         </form>
       </div>
@@ -126,7 +129,8 @@ import WhatsAppButton from "./WhatsAppButton.astro";
   </div>
 </section>
 
-<script is:inline define:vars={{ WHATSAPP_NUMBER, whatsappConfigured }}>
+<script is:inline define:vars={{ WHATSAPP_NUMBER, whatsappConfigured, strings }}
+>
   const form = document.getElementById("message-builder");
   const error = document.getElementById("mb-error");
 
@@ -145,21 +149,21 @@ import WhatsAppButton from "./WhatsAppButton.astro";
     const need = String(data.get("need") || "").trim();
 
     if (!name || !business) {
-      fail("Please fill in your name and what your business is.");
+      fail(strings.errorRequired);
       (name ? form.elements.business : form.elements.name).focus();
       return;
     }
 
     if (!whatsappConfigured) {
-      fail("WhatsApp isn't set up on this site yet.");
+      fail(strings.errorUnconfigured);
       return;
     }
 
     const lines = [
-      `Hi, I'm ${name}.`,
-      `I run ${business}.`,
-      need && `What I need: ${need}`,
-      "Could you tell me what a website would cost?",
+      strings.messageIntro.replace("{name}", name),
+      strings.messageBusiness.replace("{business}", business),
+      need && strings.messageNeed.replace("{need}", need),
+      strings.messageAsk,
     ].filter(Boolean);
 
     window.open(

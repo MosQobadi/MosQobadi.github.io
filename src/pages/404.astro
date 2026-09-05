@@ -3,55 +3,66 @@
  * GitHub Pages serves this for any path it can't find. Without it you get
  * GitHub's own stark error page, with its logo on it, on a site meant to be
  * selling your work.
+ *
+ * It is English-only: a static host has one 404 document for the whole origin,
+ * so it cannot know which language the reader was expecting. The language
+ * switcher in the header is still here, and it points at real pages.
  */
 import Base from "~/layouts/Base.astro";
 import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
 import WhatsAppButton from "~/components/WhatsAppButton.astro";
+import { content, site } from "~/data";
+import { DEFAULT_LOCALE } from "~/i18n/config";
+
+const locale = DEFAULT_LOCALE;
+const t = content[locale].notFound;
 ---
 
 <Base
-  title="Page not found — Mostafa Qobadi"
-  description="That page doesn't exist. Head back to the homepage to see the work and the prices."
+  locale={locale}
+  title={`${t.heading} — ${site.name}`}
+  description={t.body}
   noindex
+  alternates={false}
 >
-  <a href="#main" class="skip-link">Skip to content</a>
-  <Header />
+  <a href="#main" class="skip-link">{content[locale].nav.skip}</a>
+  <Header locale={locale} />
 
   <main
     id="main"
     class="mx-auto max-w-2xl px-5 py-24 text-center sm:px-8 sm:py-32"
   >
-    <p class="text-accent text-sm font-bold tracking-[0.2em] uppercase">
-      Page not found
-    </p>
+    <p class="eyebrow text-accent">{t.eyebrow}</p>
 
-    <h1 class="mt-5 text-4xl font-bold sm:text-5xl">That page isn't here.</h1>
+    <h1 class="display mt-6 text-[2.5rem] sm:text-5xl">{t.heading}</h1>
 
-    <p class="text-muted mt-5 text-lg">
-      It may have been moved or the link may have a typo in it. Everything — the
-      work, the prices, how it all works — is on the homepage.
-    </p>
+    <p class="text-muted mt-5 text-lg leading-relaxed">{t.body}</p>
 
     <div class="mt-9 flex flex-wrap justify-center gap-3">
       <a
         href="/"
-        class="bg-accent hover:bg-accent-bright rounded-full px-7 py-4 font-semibold text-white transition-colors"
+        class="bg-accent text-accent-fg hover:bg-accent-hover inline-flex min-h-11 items-center rounded-full px-7 py-3.5 font-medium transition-colors"
       >
-        Back to the homepage
+        {t.home}
       </a>
       <a
         href="/#work"
-        class="border-line-strong hover:border-accent rounded-full border px-7 py-4 font-semibold transition-colors"
+        class="border-line-strong hover:border-accent hover:text-accent inline-flex min-h-11 items-center rounded-full border px-7 py-3.5 font-medium transition-colors"
       >
-        See the work
+        {t.work}
       </a>
     </div>
 
     <div class="mt-12 flex justify-center">
-      <WhatsAppButton label="Or just message me" size="md" />
+      <WhatsAppButton
+        locale={locale}
+        label={t.message}
+        variant="outline"
+        size="md"
+      />
     </div>
   </main>
 
-  <Footer />
+  <Footer locale={locale} />
 </Base>

@@ -1,29 +1,90 @@
 ---
-import "@fontsource-variable/inter";
-import "@fontsource/instrument-serif";
+import "@fontsource-variable/geist";
+import "@fontsource-variable/geist-mono";
 import "~/styles/global.css";
-import { site } from "~/data/site";
+import { site } from "~/data";
+import {
+  DEFAULT_LOCALE,
+  LOCALES,
+  LOCALE_TAGS,
+  localize,
+  type Locale,
+} from "~/i18n/config";
 
 interface Props {
-  title?: string;
-  description?: string;
+  locale?: Locale;
+  title: string;
+  description: string;
   /** Set on demo pages so they never compete with the real site in search. */
   noindex?: boolean;
   bodyClass?: string;
+  /**
+   * Demo pages pin themselves to light. They are pretending to be three real
+   * client sites with their own fixed palettes, and half-inverting one of them
+   * because the *portfolio's* visitor prefers dark would just look broken.
+   */
+  forceLight?: boolean;
+  /**
+   * Demos are standalone pages with no French counterpart yet, so they opt out
+   * of the alternate-language link tags rather than pointing at a 404.
+   */
+  alternates?: boolean;
 }
 
 const {
-  title = `${site.name} — ${site.title}`,
-  description = site.description,
+  locale = DEFAULT_LOCALE,
+  title,
+  description,
   noindex = false,
   bodyClass = "",
+  forceLight = false,
+  alternates = true,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
+
+/**
+ * Stamped onto <html> before the first paint. It has to reach the browser as
+ * raw text, so it is injected with `set:html` rather than written as a child
+ * of the <script> tag — a template literal placed there is emitted verbatim,
+ * braces and backticks included, and parses as a block that does nothing at
+ * all. Which is a silent failure: the page still renders, it just always
+ * ignores the reader's saved choice.
+ *
+ * The stored value is one of "light" | "dark" | "system"; what lands on the
+ * element is only ever "light" or "dark", so the CSS never has to ask two
+ * questions to know which palette is on.
+ */
+const themeScript = `(() => {
+  try {
+    var stored = localStorage.getItem("theme");
+    var pref = stored === "light" || stored === "dark" ? stored : "system";
+    var system = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.dataset.theme = pref === "system" ? system : pref;
+  } catch (e) {
+    document.documentElement.dataset.theme = "light";
+  }
+})();`;
+
+/**
+ * The same page in the other language. Built by stripping any locale prefix
+ * off the current path and re-adding the target's, so this keeps working if
+ * more pages are added later.
+ */
+const barePath =
+  "/" +
+  Astro.url.pathname
+    .split("/")
+    .filter(Boolean)
+    .filter(
+      (segment, index) => !(index === 0 && LOCALES.includes(segment as Locale)),
+    )
+    .join("/");
+const normalised = barePath.endsWith("/") ? barePath : `${barePath}/`;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={LOCALE_TAGS[locale]} data-theme={forceLight ? "light" : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -32,14 +93,61 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, follow" />}
 
+    {
+      alternates && (
+        <>
+          {LOCALES.map((code) => (
+            <link
+              rel="alternate"
+              hreflang={LOCALE_TAGS[code]}
+              href={new URL(localize(normalised, code), Astro.site)}
+            />
+          ))}
+          <link
+            rel="alternate"
+            hreflang="x-default"
+            href={new URL(localize(normalised, DEFAULT_LOCALE), Astro.site)}
+          />
+        </>
+      )
+    }
+
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta
+      property="og:locale"
+      content={LOCALE_TAGS[locale].replace("-", "_")}
+    />
+    <meta property="og:site_name" content={site.name} />
     <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#faf7f2" />
+
+    <!--
+      Two theme-colour tags rather than one, so the phone's browser chrome
+      matches whichever palette is showing instead of always the light one.
+    -->
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#08090b"
+      media="(prefers-color-scheme: dark)"
+    />
+
+    {
+      /*
+       * Inline and unbundled, above the body, on purpose. A deferred module
+       * would paint the light theme first and then snap to dark — the flash
+       * every hand-rolled dark mode is remembered for.
+       */
+      !forceLight && <script is:inline set:html={themeScript} />
+    }
   </head>
   <body class={bodyClass}>
     <slot />

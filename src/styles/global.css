@@ -1,50 +1,65 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Dark mode is driven by a `data-theme` attribute on <html>, never by a media
+ * query alone. The inline script in Base.astro resolves the user's preference
+ * ("light" / "dark" / "system") to a literal value before the first paint, so
+ * by the time any of this applies the attribute is always one of two things.
+ *
+ * That is why there is no `prefers-color-scheme` in the variant below: mixing
+ * the two is how you end up with a toggle that cannot override the OS.
+ * ───────────────────────────────────────────────────────────────────────── */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme {
-  /* ── Portfolio palette ──────────────────────────────────────────────────
-   * Warm ivory, espresso ink, brick red. Roles, not shades: `text-muted`
-   * means "secondary text", so the whole site re-tints from this block.
-   * Contrast against `paper`, all AA or better:
-   *   fg 16.3:1 · muted 7.1:1 · subtle 4.8:1 · accent 5.6:1
-   *   white on accent 5.9:1 · accent-on-dark over night 6.2:1
+  /* ── Palette — light ────────────────────────────────────────────────────
+   * Roles, not shades. `text-muted` means "secondary text", so the whole site
+   * re-tints from one block. Every pair below was measured, not guessed:
+   *   fg/canvas 19.8:1 · muted 7.7:1 · subtle 5.3:1 · accent 6.1:1
+   *   accent-fg on accent 6.1:1 · accent on wash 5.4:1
+   * The dark overrides further down were measured to the same bar.
    * ──────────────────────────────────────────────────────────────────── */
-  --color-paper: #faf7f2;
-  --color-surface: #fffdfa;
-  --color-sunk: #f2ede4;
-  --color-fg: #1a1613;
-  --color-muted: #5a524a;
-  --color-subtle: #766d63;
-  --color-line: #e6dfd5;
-  --color-line-strong: #cfc5b8;
+  --color-canvas: #ffffff;
+  --color-canvas-alt: #fafafa;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f7f7f8;
+  --color-sunk: #f4f4f5;
 
-  --color-accent: #b33a1a;
-  --color-accent-bright: #d14a24;
-  --color-accent-wash: #fbefe9;
+  --color-fg: #0a0a0b;
+  --color-muted: #52525b;
+  --color-subtle: #6b6b75;
 
-  /* The dark band under the prices, and the footer of the closing section. */
-  --color-night: #17130f;
-  --color-night-surface: #211b16;
-  --color-night-fg: #f7f2ea;
-  --color-night-muted: #a79b8d;
-  --color-night-line: #362c23;
-  --color-accent-on-dark: #e8724c;
+  --color-line: #e4e4e7;
+  --color-line-strong: #d4d4d8;
 
-  /* Instrument Serif carries every large statement; Inter does all the work
-     that has to stay legible at 14px. Never set the serif below ~24px. */
-  --font-display:
-    "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
+  --color-accent: #3457d5;
+  --color-accent-hover: #2a49bd;
+  /* Text sitting ON a solid accent fill. Flips to near-black in dark mode,
+     because the dark accent is a light blue — don't hardcode white anywhere. */
+  --color-accent-fg: #ffffff;
+  --color-accent-wash: #eef1fe;
+  --color-accent-line: #c7d2fb;
+
+  /* ── Type ───────────────────────────────────────────────────────────────
+   * One family doing everything, separated by weight, size and tracking
+   * rather than by a second typeface. Geist Mono appears only on the small
+   * uppercase labels and the section numerals, where it reads as a system
+   * detail rather than as decoration.
+   * ──────────────────────────────────────────────────────────────────── */
   --font-sans:
-    "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
+  --font-mono:
+    "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --radius-card: 14px;
+  --radius-card: 16px;
 
   /* ── Demo palettes ──────────────────────────────────────────────────────
    * The three demos under /demos/ are meant to look like three different
    * businesses, so each gets its own token set rather than reusing the
    * portfolio's. Prefixes keep them out of each other's way: `bg-cafe-paper`,
-   * `text-trade-ink`, `bg-gym-lime`. Same contrast rules as above —
-   * every accent below clears 4.5:1 under white text.
+   * `text-trade-ink`, `bg-gym-lime`. These do NOT participate in dark mode —
+   * the demos pretend to be real client sites and are pinned to light.
    * ──────────────────────────────────────────────────────────────────── */
 
   /* Olive & Ember — restaurant */
@@ -80,15 +95,78 @@
   --font-cafe: "Fraunces Variable", ui-serif, Georgia, serif;
   --font-trade:
     "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+}
 
-  --radius-card: 14px;
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Dark palette.
+ *
+ * Not an inversion — an inverted light theme looks like a bug. The greys are
+ * lifted off pure black so the surfaces can sit above the canvas, and the
+ * accent moves to a light blue because a mid-blue on near-black fails contrast
+ * at any size. Measured on #08090b:
+ *   fg 19.1:1 · muted 7.8:1 · subtle 5.9:1 · accent 8.5:1 · canvas-on-accent 8.5:1
+ * ───────────────────────────────────────────────────────────────────────── */
+:root[data-theme="dark"] {
+  --color-canvas: #08090b;
+  --color-canvas-alt: #0c0d10;
+  --color-surface: #101114;
+  --color-surface-alt: #16181c;
+  --color-sunk: #16181c;
+
+  --color-fg: #fafafa;
+  --color-muted: #a1a1aa;
+  --color-subtle: #8b8b95;
+
+  --color-line: #232529;
+  --color-line-strong: #34363c;
+
+  --color-accent: #8aa6ff;
+  --color-accent-hover: #a5bbff;
+  --color-accent-fg: #08090b;
+  --color-accent-wash: #141a2e;
+  --color-accent-line: #2b3a6b;
+}
+
+/* The no-JavaScript path. The inline script normally stamps `data-theme` on
+   before paint; if it never runs, a reader whose OS is dark still gets dark
+   rather than a white flash they can't turn off. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --color-canvas: #08090b;
+    --color-canvas-alt: #0c0d10;
+    --color-surface: #101114;
+    --color-surface-alt: #16181c;
+    --color-sunk: #16181c;
+    --color-fg: #fafafa;
+    --color-muted: #a1a1aa;
+    --color-subtle: #8b8b95;
+    --color-line: #232529;
+    --color-line-strong: #34363c;
+    --color-accent: #8aa6ff;
+    --color-accent-hover: #a5bbff;
+    --color-accent-fg: #08090b;
+    --color-accent-wash: #141a2e;
+    --color-accent-line: #2b3a6b;
+  }
 }
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      color-scheme: dark;
+    }
+  }
+
   html {
     scroll-behavior: smooth;
     /* Anchor links land below the sticky header instead of under it. */
-    scroll-padding-top: 5rem;
+    scroll-padding-top: 6rem;
     -webkit-text-size-adjust: 100%;
   }
 
@@ -113,18 +191,28 @@
   }
 
   body {
-    background-color: var(--color-paper);
+    background-color: var(--color-canvas);
     color: var(--color-fg);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* Theme changes are the one colour transition on the site. Without it the
+       toggle snaps and reads as a page reload. */
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-accent-fg);
   }
 
   /* A visible focus ring everywhere, including for mouse users on inputs. */
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
-    border-radius: 3px;
+    border-radius: 4px;
   }
 
   h1,
@@ -133,24 +221,44 @@
     text-wrap: balance;
   }
 
-  /* Instrument Serif sets a touch loose for display use, and its default
-     figures are old-style. Both are fixed once, here. */
-  .font-display {
-    letter-spacing: -0.015em;
-    font-variant-numeric: lining-nums tabular-nums;
-  }
-
-  /* Prices and step numbers must not shift width as digits change. */
-  .tabular {
-    font-variant-numeric: tabular-nums;
-  }
-
   p {
     text-wrap: pretty;
+  }
+
+  /* Prices, step numbers and timetables must not shift width as digits change. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 }
 
 @layer components {
+  /*
+   * Display type. Geist is a grotesk, so the thing that makes it read as
+   * *display* rather than as a big paragraph is negative tracking that grows
+   * with the size. Applying it by hand every time is how a page ends up with
+   * six slightly different headline treatments.
+   */
+  .display {
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+  }
+
+  .display-sm {
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+
+  /* The small uppercase labels: section names, badges, the availability line. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
   /* Skip link — visually hidden until focused by a keyboard user. */
   .skip-link {
     position: absolute;
@@ -159,7 +267,7 @@
     z-index: 100;
     transform: translateY(-200%);
     background: var(--color-fg);
-    color: var(--color-paper);
+    color: var(--color-canvas);
     padding: 0.6rem 1rem;
     border-radius: 8px;
     font-weight: 600;
@@ -168,9 +276,66 @@
   .skip-link:focus {
     transform: translateY(0);
   }
-}
 
-@layer components {
+  /*
+   * The hero's ground. A fine dot grid that fades out before it reaches the
+   * text, plus one soft accent bloom off to one side — not the centred halo
+   * every template ships with. Both are gradients, so they cost no bytes and
+   * re-tint with the theme for free.
+   */
+  .hero-field {
+    background-image:
+      radial-gradient(
+        circle at 1px 1px,
+        var(--color-line-strong) 1px,
+        transparent 0
+      ),
+      radial-gradient(
+        60rem 40rem at 85% -10%,
+        var(--color-accent-wash) 0%,
+        transparent 65%
+      );
+    background-size:
+      28px 28px,
+      100% 100%;
+    -webkit-mask-image: radial-gradient(
+      75rem 45rem at 50% 0%,
+      #000 0%,
+      transparent 78%
+    );
+    mask-image: radial-gradient(
+      75rem 45rem at 50% 0%,
+      #000 0%,
+      transparent 78%
+    );
+  }
+
+  /*
+   * One card treatment, used by work samples, capability cards and price
+   * cards. The hover is deliberately small: the border warms, the card lifts
+   * 2px, and a soft accent shadow appears underneath. Anything larger fights
+   * the restraint the rest of the page is arguing for.
+   */
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    transition:
+      border-color 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.25s ease;
+  }
+
+  .card-interactive:hover {
+    border-color: var(--color-accent-line);
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.04),
+      0 12px 32px -12px
+        color-mix(in oklab, var(--color-accent) 35%, transparent);
+  }
+
   /* The rule that runs under every section label. Its job is to make the page
      read as a set of chapters rather than a stack of unrelated blocks. */
   .rule {

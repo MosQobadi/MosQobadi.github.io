@@ -1,0 +1,99 @@
+---
+import { content } from "~/data";
+import type { Locale } from "~/i18n/config";
+import SectionLabel from "./SectionLabel.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = content[locale].capabilities;
+
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Why this section exists.
+ *
+ * The page below it is a price list that stops at a few hundred dollars, and a
+ * reader takes a price list as the *ceiling* of what someone can do. Without
+ * this block the whole site quietly says "brochure sites only" — which is the
+ * one thing about it that was actually wrong.
+ *
+ * It sits above the pricing on purpose: the claim has to land before the
+ * numbers do, or the numbers frame it. And it is written to talk people OUT of
+ * software they don't need, because that is what the reader can tell apart
+ * from a sales pitch.
+ * ───────────────────────────────────────────────────────────────────────────
+ */
+
+/** Paired with `t.items` by position — three items, three icons. */
+const icons = [
+  // Window with panes — an application, not a page.
+  "M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Zm0 3h18M9 9v11",
+  // Stacked layers — records and the system over them.
+  "M12 3 2 8l10 5 10-5-10-5ZM2 16l10 5 10-5M2 12l10 5 10-5",
+  // Two nodes joined — one thing talking to another.
+  "M9 12H5a3 3 0 0 1 0-6h4m6 6h4a3 3 0 0 0 0-6h-4M8 12h8",
+];
+---
+
+<section
+  id="capabilities"
+  class="border-line bg-canvas-alt scroll-mt-24 border-b py-20 sm:py-28"
+>
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <SectionLabel
+      number="02"
+      label={t.label}
+      heading={t.heading}
+      standfirst={t.standfirst}
+      data-reveal
+    />
+
+    <ul class="mt-12 grid gap-5 md:grid-cols-3" data-reveal>
+      {
+        t.items.map((item, index) => (
+          <li class="card flex flex-col p-7">
+            <span
+              aria-hidden="true"
+              class="bg-accent-wash text-accent grid h-11 w-11 place-items-center rounded-xl"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-5 w-5"
+              >
+                <path d={icons[index % icons.length]} />
+              </svg>
+            </span>
+
+            <h3 class="display-sm mt-5 text-xl">{item.title}</h3>
+
+            <p class="text-muted mt-3 flex-1 text-[0.9375rem] leading-relaxed">
+              {item.body}
+            </p>
+
+            <ul class="border-line mt-6 flex flex-wrap gap-1.5 border-t pt-5">
+              {item.tags.map((tag) => (
+                <li class="bg-sunk text-subtle rounded-md px-2 py-1 font-mono text-[0.6875rem]">
+                  {tag}
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p
+      class="text-muted border-line mt-10 max-w-3xl border-t pt-6 text-sm leading-relaxed"
+      data-reveal
+    >
+      {t.note}
+    </p>
+  </div>
+</section>

@@ -12,6 +12,20 @@ import tailwindcss from "@tailwindcss/vite";
 // through `import.meta.env.BASE_URL`.
 export default defineConfig({
   site: "https://mosqobadi.github.io",
+
+  // English is the default and is served from the root with no prefix, so the
+  // URL that goes on a business card stays "/" rather than "/en/". French
+  // lives under /fr/. `redirectToDefaultLocale: false` keeps our own 404.astro
+  // in charge of unknown paths instead of bouncing them to the homepage.
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "fr"],
+    routing: {
+      prefixDefaultLocale: false,
+      redirectToDefaultLocale: false,
+    },
+  },
+
   vite: {
     plugins: [tailwindcss()],
   },

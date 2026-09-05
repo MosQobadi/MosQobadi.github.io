@@ -1,0 +1,122 @@
+---
+import { content } from "~/data";
+import type { Locale } from "~/i18n/config";
+
+interface Props {
+  locale: Locale;
+  class?: string;
+}
+
+const { locale, class: className = "" } = Astro.props;
+const t = content[locale].nav;
+---
+
+<!--
+  Two icons stacked in one button; CSS shows whichever matches the theme that
+  is currently on. Doing it this way means the correct icon is already painted
+  when the inline script in <head> stamps the attribute, so the button never
+  flickers through the wrong state on load.
+-->
+<button
+  type="button"
+  id="theme-toggle"
+  class:list={[
+    "border-line text-muted hover:text-fg hover:border-line-strong inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors",
+    className,
+  ]}
+  data-to-light={t.themeToLight}
+  data-to-dark={t.themeToDark}
+  aria-label={t.themeToDark}
+>
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.7"
+    stroke-linecap="round"
+    class="icon-moon h-[1.05rem] w-[1.05rem]"
+  >
+    <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"></path>
+  </svg>
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.7"
+    stroke-linecap="round"
+    class="icon-sun h-[1.05rem] w-[1.05rem]"
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <path
+      d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+    ></path>
+  </svg>
+</button>
+
+<style>
+  /* Light theme on screen -> offer dark -> show the moon. */
+  .icon-sun {
+    display: none;
+  }
+  :global(:root[data-theme="dark"]) .icon-moon {
+    display: none;
+  }
+  :global(:root[data-theme="dark"]) .icon-sun {
+    display: block;
+  }
+  /* The no-JavaScript path, matching global.css. */
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme])) .icon-moon {
+      display: none;
+    }
+    :global(:root:not([data-theme])) .icon-sun {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  const button = document.getElementById("theme-toggle");
+  const root = document.documentElement;
+
+  if (button) {
+    const media = matchMedia("(prefers-color-scheme: dark)");
+
+    /* The button's job is to describe what pressing it will DO, not what is
+       currently on screen — so the label is always the opposite of the theme. */
+    const syncLabel = () => {
+      const isDark = root.dataset.theme === "dark";
+      const next = isDark ? button.dataset.toLight : button.dataset.toDark;
+      if (next) button.setAttribute("aria-label", next);
+    };
+
+    syncLabel();
+
+    button.addEventListener("click", () => {
+      const next = root.dataset.theme === "dark" ? "light" : "dark";
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem("theme", next);
+      } catch {
+        /* Private mode. The choice just won't survive the next page load. */
+      }
+      syncLabel();
+    });
+
+    /* Only follows the OS while the reader has never chosen for themselves —
+       once they press the button, their choice outranks the system. */
+    media.addEventListener("change", (event) => {
+      let stored: string | null = null;
+      try {
+        stored = localStorage.getItem("theme");
+      } catch {
+        /* ignore */
+      }
+      if (stored === "light" || stored === "dark") return;
+      root.dataset.theme = event.matches ? "dark" : "light";
+      syncLabel();
+    });
+  }
+</script>

@@ -1,55 +1,99 @@
 ---
-import { site, whatsappConfigured } from "~/data/site";
+import { content, site, whatsappConfigured } from "~/data";
+import { localize, type Locale } from "~/i18n/config";
 import WhatsAppButton from "./WhatsAppButton.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+import LangSwitch from "./LangSwitch.astro";
+
+interface Props {
+  locale: Locale;
+  /** Path of the current page without a locale prefix — for the switcher. */
+  path?: string;
+}
+
+const { locale, path = "/" } = Astro.props;
+const t = content[locale];
 
 const links = [
-  { href: "#work", label: "Work" },
-  { href: "#pricing", label: "Pricing" },
-  { href: "#process", label: "How it works" },
+  { href: "#work", label: t.nav.work },
+  { href: "#capabilities", label: t.nav.capabilities },
+  { href: "#pricing", label: t.nav.pricing },
+  { href: "#process", label: t.nav.process },
 ];
+
+const home = localize("/", locale);
 ---
 
 <header
-  class="border-line/70 bg-paper/80 sticky top-0 z-50 border-b backdrop-blur-md"
+  class="border-line/80 bg-canvas/75 sticky top-0 z-50 border-b backdrop-blur-xl"
 >
   <div
-    class="mx-auto flex h-[4.5rem] max-w-6xl items-center justify-between gap-4 px-5 sm:px-8"
+    class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:h-[4.5rem] sm:px-8"
   >
-    <!-- The name set in the display serif, with the accent carried by a single
-         mark rather than a coloured tile. Quieter, and it reads as a wordmark. -->
-    <a href="/" class="group flex items-baseline gap-2">
-      <span class="font-display text-xl leading-none">{site.name}</span>
-      <span aria-hidden="true" class="bg-accent h-1.5 w-1.5 rounded-full"
-      ></span>
+    <!--
+      The wordmark is a monogram tile plus the name. The tile is what stays
+      recognisable at 16px in a browser tab strip or a shared link preview,
+      and it means the name itself can be set quietly instead of shouting.
+    -->
+    <a href={home} class="group flex items-center gap-2.5" rel="home">
+      <span
+        aria-hidden="true"
+        class="bg-fg text-canvas group-hover:bg-accent group-hover:text-accent-fg grid h-8 w-8 shrink-0 place-items-center rounded-lg font-mono text-[0.8125rem] font-semibold transition-colors"
+      >
+        MQ
+      </span>
+      <span class="leading-tight">
+        <span class="block text-[0.9375rem] font-semibold tracking-tight"
+          >{site.name}</span
+        >
+        <span class="text-subtle hidden text-[0.6875rem] sm:block"
+          >{t.meta.role}</span
+        >
+      </span>
     </a>
 
-    <nav aria-label="Sections" class="flex items-center gap-1 sm:gap-2">
-      {
-        links.map((link) => (
-          <a
-            href={link.href}
-            class="text-muted hover:text-fg hidden rounded-full px-3 py-2 text-sm font-medium transition-colors sm:inline-block"
-          >
-            {link.label}
-          </a>
-        ))
-      }
+    <div class="flex items-center gap-1.5 sm:gap-3">
+      <nav aria-label={t.nav.work} class="hidden items-center lg:flex">
+        {
+          links.map((link) => (
+            <a
+              href={link.href}
+              class="text-muted hover:text-fg rounded-full px-3 py-2 text-sm transition-colors"
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <span aria-hidden="true" class="bg-line mx-1 hidden h-5 w-px lg:block"
+      ></span>
+
+      <LangSwitch locale={locale} path={path} />
+      <ThemeToggle locale={locale} />
+
       {
         /*
          * Shown at every width on purpose. Most of the traffic arrives from a
-         * phone, where the nav links above are hidden and this is the only
-         * action in the header — so hiding it on mobile would remove the
-         * button from exactly the people most likely to press it. It fits
-         * beside the wordmark down to 320px.
+         * phone, where the nav links are hidden and this is the only action in
+         * the header — so hiding it on mobile would remove the button from
+         * exactly the people most likely to press it. Below `sm` it drops to
+         * the glyph alone so it still fits beside everything else at 320px.
          *
          * The unconfigured warning state is the exception: it is loud by
          * design and would blow the header apart, and the hero and closing
          * band already carry it.
          */
         whatsappConfigured && (
-          <WhatsAppButton label="Message me" size="md" class="ml-1" />
+          <WhatsAppButton
+            locale={locale}
+            label={t.nav.cta}
+            size="md"
+            class="ml-0.5 max-sm:aspect-square max-sm:w-11 max-sm:px-0"
+            labelClass="max-sm:hidden"
+          />
         )
       }
-    </nav>
+    </div>
   </div>
 </header>

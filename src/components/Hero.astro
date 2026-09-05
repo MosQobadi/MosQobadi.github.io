@@ -1,67 +1,98 @@
 ---
-import { hero } from "~/data/site";
+import { content } from "~/data";
+import type { Locale } from "~/i18n/config";
 import WhatsAppButton from "./WhatsAppButton.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = content[locale].hero;
+
+/*
+ * One phrase inside the headline is picked out in the accent. Splitting on the
+ * phrase rather than storing three separate strings keeps the headline a
+ * single readable sentence in the content file — and if a translation changes
+ * the wording so the phrase no longer appears, `index` is -1 and the headline
+ * simply renders whole rather than breaking.
+ */
+const index = t.valueProp.indexOf(t.highlight);
+const parts =
+  index === -1
+    ? { before: t.valueProp, match: "", after: "" }
+    : {
+        before: t.valueProp.slice(0, index),
+        match: t.highlight,
+        after: t.valueProp.slice(index + t.highlight.length),
+      };
 ---
 
-<section class="border-line relative overflow-hidden border-b">
-  <!--
-    A single warm wash bleeding in from the top right. One soft shape, off to
-    one side — not the centred pink halo every template ships with.
-  -->
+<section class="border-line relative isolate overflow-hidden border-b">
   <div
     aria-hidden="true"
-    class="bg-accent-wash pointer-events-none absolute -top-56 -right-40 h-[42rem] w-[42rem] rounded-full blur-3xl"
+    class="hero-field pointer-events-none absolute inset-0 -z-10"
   >
   </div>
 
   <div
-    class="relative mx-auto max-w-6xl px-5 pt-20 pb-16 sm:px-8 sm:pt-28 sm:pb-20"
+    class="mx-auto max-w-6xl px-5 pt-16 pb-16 sm:px-8 sm:pt-24 sm:pb-20 lg:pt-28"
   >
-    <p class="text-subtle text-xs font-semibold tracking-[0.18em] uppercase">
-      Web design · Available now
+    <p class="flex items-center gap-2.5">
+      <span aria-hidden="true" class="relative flex h-2 w-2 shrink-0">
+        <!-- The ping is the only looping animation on the site. It is the one
+             thing on the page that is genuinely time-sensitive information. -->
+        <span
+          class="bg-accent absolute inline-flex h-full w-full animate-ping rounded-full opacity-60"
+        ></span>
+        <span class="bg-accent relative inline-flex h-2 w-2 rounded-full"
+        ></span>
+      </span>
+      <span class="eyebrow text-subtle">{t.eyebrow}</span>
     </p>
 
     <h1
-      class="font-display mt-7 max-w-[16ch] text-[3rem] leading-[1.0] sm:text-[4.25rem] lg:text-[5.25rem]"
+      class="display mt-8 max-w-[17ch] text-[2.75rem] sm:text-[4rem] lg:text-[5rem]"
     >
-      {hero.valueProp}
+      {parts.before}<span class="text-accent">{parts.match}</span>{parts.after}
     </h1>
 
-    <p class="text-muted mt-8 max-w-xl text-lg sm:text-xl">
-      {hero.support}
+    <p class="text-muted mt-7 max-w-2xl text-lg leading-relaxed sm:text-xl">
+      {t.support}
     </p>
 
-    <!--
-      CTA and the three reassurances share a rule. On a phone they stack; from
-      `md` up the points sit to the right of the button, which keeps the fold
-      short enough that the first work sample is nearly visible.
-    -->
-    <div
-      class="border-line mt-12 flex flex-col gap-8 border-t pt-8 md:flex-row md:items-center md:justify-between"
-    >
-      <WhatsAppButton label={hero.cta} />
-
-      <ul class="grid gap-3 sm:grid-cols-3 md:max-w-xl">
-        {
-          hero.points.map((point) => (
-            <li class="text-muted flex items-start gap-2.5 text-[0.9375rem]">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                class="text-accent mt-1 h-3.5 w-3.5 shrink-0"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.79 6.8-6.79a1 1 0 0 1 1.4 0Z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-              {point}
-            </li>
-          ))
-        }
-      </ul>
+    <div class="mt-10 flex flex-wrap items-center gap-3">
+      <WhatsAppButton locale={locale} label={t.cta} />
+      <a
+        href="#work"
+        class="border-line-strong text-fg hover:border-accent hover:text-accent inline-flex min-h-11 items-center justify-center rounded-full border px-7 py-3.5 font-medium transition-colors"
+      >
+        {t.ctaSecondary}
+      </a>
     </div>
+
+    <ul
+      class="border-line mt-12 grid gap-3 border-t pt-8 sm:grid-cols-3 sm:gap-6"
+    >
+      {
+        t.points.map((point) => (
+          <li class="text-muted flex items-start gap-2.5 text-[0.9375rem]">
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="text-accent mt-[0.2rem] h-4 w-4 shrink-0"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.79 6.8-6.79a1 1 0 0 1 1.4 0Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            {point}
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </section>

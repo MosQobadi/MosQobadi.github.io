@@ -1,41 +1,54 @@
 ---
-import { steps } from "~/data/site";
+import { content } from "~/data";
+import type { Locale } from "~/i18n/config";
 import SectionLabel from "./SectionLabel.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = content[locale].process;
 ---
 
-<section id="process" class="border-line scroll-mt-24 border-b py-20 sm:py-28">
+<section
+  id="process"
+  class="border-line bg-canvas-alt scroll-mt-24 border-b py-20 sm:py-28"
+>
   <div class="mx-auto max-w-6xl px-5 sm:px-8">
-    <SectionLabel
-      number="03"
-      label="How it works"
-      heading="Four steps, and you only do the first."
-      data-reveal
-    />
+    <SectionLabel number="04" label={t.label} heading={t.heading} data-reveal />
 
     <!--
-      Numbers set in the display serif and hung on a hairline, rather than the
-      circled digits every process section uses. Each step is its own column
-      with its own rule, so the row reads as a sequence.
+      Numbers hung on a hairline rather than the circled digits every process
+      section uses. Each step is its own column with its own rule, so the row
+      reads as a sequence.
 
-      They are deliberately NOT accent-coloured: the four section markers
-      (01-04) already own red numerals, and two sets of red numbers on one
-      page reads as one broken sequence rather than two deliberate ones.
+      They are deliberately NOT accent-coloured: the section markers (01-05)
+      already own the accent numerals, and two sets of accent numbers on one
+      page read as one broken sequence rather than two deliberate ones.
+
+      They are also not `text-line-strong`, which is what a watermark numeral
+      wants to be: that token lands at 1.4:1 on light and 1.6:1 on dark, which
+      is not "quiet", it is invisible. `text-subtle` clears 5:1 in both themes
+      and still reads as structure rather than as content.
     -->
     <ol
-      class="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4"
+      class="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4"
       data-reveal
     >
       {
-        steps.map((step, index) => (
+        t.steps.map((step, index) => (
           <li class="border-line border-t pt-6">
             <span
               aria-hidden="true"
-              class="font-display text-line-strong block text-4xl leading-none"
+              class="text-subtle tabular block font-mono text-3xl leading-none"
             >
               {String(index + 1).padStart(2, "0")}
             </span>
-            <h3 class="mt-5 text-lg font-semibold">{step.title}</h3>
-            <p class="text-muted mt-2.5 text-[0.9375rem]">{step.body}</p>
+            <h3 class="mt-5 font-semibold tracking-tight">{step.title}</h3>
+            <p class="text-muted mt-2.5 text-[0.9375rem] leading-relaxed">
+              {step.body}
+            </p>
           </li>
         ))
       }

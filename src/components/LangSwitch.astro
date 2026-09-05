@@ -1,0 +1,58 @@
+---
+import { content } from "~/data";
+import {
+  LOCALES,
+  LOCALE_NAMES,
+  LOCALE_SHORT,
+  localize,
+  type Locale,
+} from "~/i18n/config";
+
+interface Props {
+  locale: Locale;
+  /** Root-relative path of the current page, without a locale prefix. */
+  path?: string;
+  class?: string;
+}
+
+const { locale, path = "/", class: className = "" } = Astro.props;
+const t = content[locale].nav;
+---
+
+<!--
+  Two links rather than a dropdown. With exactly two languages a select is
+  more machinery than the job needs, and a link is the only version of this
+  that works before any JavaScript runs.
+
+  `hreflang` and the self-named label ("Français", never "French") are what
+  make it usable to someone who cannot read the page they are currently on.
+-->
+<nav
+  aria-label={t.langLabel}
+  class:list={[
+    "border-line bg-surface inline-flex items-center rounded-full border p-0.5",
+    className,
+  ]}
+>
+  {
+    LOCALES.map((code) => {
+      const current = code === locale;
+      return (
+        <a
+          href={localize(path, code)}
+          hreflang={code}
+          lang={code}
+          aria-current={current ? "true" : undefined}
+          title={LOCALE_NAMES[code]}
+          class:list={[
+            "rounded-full px-2.5 py-1 font-mono text-xs font-medium transition-colors",
+            current ? "bg-fg text-canvas" : "text-subtle hover:text-fg",
+          ]}
+        >
+          {LOCALE_SHORT[code]}
+          <span class="sr-only"> — {LOCALE_NAMES[code]}</span>
+        </a>
+      );
+    })
+  }
+</nav>

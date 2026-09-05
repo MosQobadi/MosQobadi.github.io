@@ -1,12 +1,28 @@
-# Portfolio — websites for local businesses
+# Portfolio — websites and web apps for local businesses
 
 A sales page, not a CV. It exists to turn a Facebook Marketplace click into a
 WhatsApp message: what I build, what it costs, and one button to start a
 conversation.
 
+It has a second job, and the design is most of how it does it. A prospective
+customer reads the site itself as a sample of what they will get — so a plain
+page quietly promises a plain website. The page is the portfolio.
+
+Two things follow from that, and both are load-bearing rather than decoration:
+
+- **The work is not capped at the price list.** A page that only shows $120
+  landing pages tells the reader that is the ceiling. The
+  [capabilities section](src/components/Capabilities.astro) sits _above_ pricing
+  and says plainly that web applications, ERP and CRM systems are the larger
+  half of the work — because once the numbers are read first, they frame
+  everything that comes after them.
+- **English and French, light and dark**, both first-class. The audience is
+  Canadian; prices are in CAD and set the way each language sets them
+  (`$280` in English, `280 $` in French).
+
 Built with [Astro](https://astro.build) and Tailwind CSS, output as plain static
-files. There is **7 KB of JavaScript on the whole site** — the page is meant to
-be the proof that I can build a fast one.
+files. The homepage ships **~3 KB of inline JavaScript and no external script
+files at all** — the page is meant to be the proof that I can build a fast one.
 
 ---
 
@@ -31,19 +47,35 @@ Then open http://localhost:4321.
 
 ## Editing the content
 
-**Almost all the portfolio's copy lives in one file:
-[`src/data/site.ts`](src/data/site.ts).** Components read from it, so you rarely
-need to open a `.astro` file to change what the site says.
+**All of the portfolio's copy lives in two files, one per language:**
+[`src/data/en.ts`](src/data/en.ts) and [`src/data/fr.ts`](src/data/fr.ts).
+Components read from them, so you rarely need to open a `.astro` file to change
+what the site says.
 
-| What you want to change              | Where in `site.ts`     |
-| ------------------------------------ | ---------------------- |
-| WhatsApp number and first message    | top of the file        |
-| Your name, page title, email         | `site`                 |
-| Headline, CTA label, the three ticks | `hero`                 |
-| Work samples — the core section      | `workSamples`          |
-| Package names, prices, features      | `tiers`, `pricingNote` |
-| The four "how it works" steps        | `steps`                |
-| Closing CTA wording                  | `closing`              |
+Both are typed as `Content` from [`src/data/types.ts`](src/data/types.ts), so
+**adding a string to one language and forgetting the other fails `pnpm check`**
+rather than shipping a half-translated page.
+
+| What you want to change              | Where in `en.ts` / `fr.ts` |
+| ------------------------------------ | -------------------------- |
+| Headline, CTA label, the three ticks | `hero`                     |
+| Work sample names and descriptions   | `work.samples`             |
+| The "beyond websites" section        | `capabilities`             |
+| Package names, prices, features      | `pricing.tiers`            |
+| The four "how it works" steps        | `process.steps`            |
+| Closing CTA and the message builder  | `closing`                  |
+
+Everything that is **not words** lives once in
+[`src/data/shared.ts`](src/data/shared.ts) — the WhatsApp number, your name and
+email, and each work sample's image, link and demo/client flag. Keeping it out
+of the language files means a translation cannot accidentally point a card at a
+different site.
+
+### A note on wording
+
+The copy avoids the word _simple_ on purpose. It reads as a promise about the
+result rather than about the process, and it sets the reader's price expectation
+for you. `en.ts` carries the full note at the top of the file.
 
 ### Swapping a work-sample thumbnail
 
@@ -67,14 +99,27 @@ subset: `pnpm thumbnails gym plumber`.
 > the machine this was built on, so rather than ship a screenshot of a Chrome
 > error page there's a plain branded panel instead. From a machine that can reach
 > the site, run `pnpm thumbnails topoil` — then update `imageAlt` for that entry
-> in `site.ts` to describe what the screenshot actually shows. The script refuses
-> to overwrite an image when the URL doesn't answer, so it can't go wrong twice.
+> in **both** `en.ts` and `fr.ts` to describe what the screenshot actually
+> shows. The script refuses to overwrite an image when the URL doesn't answer,
+> so it can't go wrong twice.
 
 ### Adding a work sample
 
-Add an entry to `workSamples` in `site.ts`, with an `import` for its image at the
-top of the file alongside the others. Set `isDemo: false` only for real client
-work — the honesty is the point, and the card labels itself from that flag.
+Three edits, and the type checker walks you through them:
+
+1. Add its id to `WorkId` in [`src/data/types.ts`](src/data/types.ts).
+2. Add an entry to `workMedia` and `workOrder` in `shared.ts`, with an `import`
+   for its image at the top of the file alongside the others. Set
+   `isDemo: false` only for real client work — the honesty is the point, and the
+   card labels itself from that flag.
+3. Add its copy to `work.samples` in `en.ts` and `fr.ts`.
+
+### Wiring an example to a price package
+
+Each package card links to the sample that shows what it produces. That pairing
+is `tierMeta` in `shared.ts`. Set a tier's `example` to `null` and the card says
+"Example coming soon" instead of linking nowhere — which is what you want while
+the real one is still being built.
 
 ---
 
@@ -109,8 +154,58 @@ payment processing, no checkout, on any of them.
 All colour lives as tokens at the top of
 [`src/styles/global.css`](src/styles/global.css) — the portfolio's palette plus
 one set per demo (`cafe-*`, `trade-*`, `gym-*`). They're roles, not shades:
-`text-muted` means "secondary text". Every accent is contrast-checked at 4.5:1 or
-better under white text; if you re-tint anything, keep it there.
+`text-muted` means "secondary text", so the whole site re-tints from one block.
+
+**Light and dark are two sets of the same token names.** The light values sit in
+`@theme`; `:root[data-theme="dark"]` overrides the same names underneath.
+Nothing outside that block knows which theme is on — if you find yourself
+writing a `dark:` variant inside a component, the token is probably missing a
+role.
+
+The dark palette is not an inversion. The greys are lifted off pure black so
+surfaces can sit above the canvas, and the accent moves to a light blue because
+a mid-blue on near-black cannot clear contrast at any size. Every text and
+background pair in both themes was measured rather than guessed: all of them
+clear WCAG AA and most clear AAA. If you re-tint anything, keep it there.
+
+### How the theme is chosen
+
+1. The reader's saved choice in `localStorage`, if they have pressed the toggle.
+2. Otherwise their OS setting, via `prefers-color-scheme`.
+
+A small inline script in [`Base.astro`](src/layouts/Base.astro) resolves those to
+a literal `light` or `dark` on `<html>` **before the first paint**, which is what
+stops the white flash. It is injected with `set:html` for a reason worth
+knowing: a script written as a template-literal child of a `<script>` tag is
+emitted verbatim, braces and backticks included, and parses as a block that does
+nothing at all — silently. The page still renders; it just ignores the reader's
+saved choice forever.
+
+The three demo pages opt out entirely (`forceLight`). They are pretending to be
+real client sites with their own fixed palettes, and half-inverting one because
+the _portfolio's_ visitor prefers dark would just look broken.
+
+---
+
+## Languages
+
+English is the default and is served from the root (`/`); French lives under
+`/fr/`, so the URL that goes on a business card stays clean.
+
+[`src/i18n/config.ts`](src/i18n/config.ts) holds the locale list and the
+`localize()` helper that builds a path for a given language. Both homepages are
+three lines each and render the same
+[`Landing.astro`](src/layouts/Landing.astro), so a section added there appears in
+both languages and the two cannot drift apart.
+
+`Base.astro` emits `hreflang` alternates plus `x-default` for every page that
+opts in. The demos opt out (`alternates={false}`) because they have no French
+counterpart yet, and pointing a search engine at a 404 is worse than saying
+nothing.
+
+**Not yet translated:** the three demo pages and `404.astro` are English-only. A
+static host serves one 404 document for the whole origin, so it cannot know
+which language the reader was expecting.
 
 ---
 
