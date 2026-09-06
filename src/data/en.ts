@@ -56,14 +56,14 @@ export const en: Content = {
     label: "Selected work",
     heading: "Sites you can open right now.",
     standfirst:
-      "One live client site, and three I built to show what each package produces. Every one of them opens — click around, try it on your phone, read the source if you like.",
+      "One live client site, and four I built myself — three websites and a working booking application. Every one of them opens: click around, try it on your phone, read the source if you like.",
     badgeDemo: "Demo I built",
     badgeLive: "Live client site",
     openDemo: "Open the demo",
     visitLive: "Visit the live site",
     disclosureLead: "Straight with you:",
     disclosureBody:
-      "the three demos are businesses I invented, built to show what each package produces rather than for paying clients. Top Oil is a real site with real customers.",
+      "the four demos are businesses I invented, built to show what each package produces rather than for paying clients. Top Oil is a real site with real customers.",
     samples: {
       topoil: {
         name: "Top Oil",
@@ -84,6 +84,19 @@ export const en: Content = {
         imageAlt:
           "The Olive & Ember restaurant demo, showing the header photo and the start of the menu.",
         features: ["Menu", "Opening hours", "Map", "Booking form"],
+      },
+      halcyon: {
+        name: "Halcyon Social Kitchen",
+        problem:
+          "Most restaurant sites are beautiful until you try to book, and then they hand you a phone number and the hours somebody answers it. This one takes the booking: live availability, a table assigned from the real floor plan, a code to cancel with, and an admin panel the floor team runs the service from.",
+        imageAlt:
+          "The Halcyon Social Kitchen booking system, showing the home page with tonight's remaining tables listed across it.",
+        features: [
+          "Live availability",
+          "Online booking",
+          "Admin panel",
+          "Menu management",
+        ],
       },
       plumber: {
         name: "Northgate Plumbing",

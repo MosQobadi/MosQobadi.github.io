@@ -133,6 +133,20 @@ Three fictional businesses under `/demos/`, each a single self-contained file:
 | [`plumber.astro`](src/pages/demos/plumber.astro)       | Northgate Plumbing | Services, published prices, coverage area, reviews, callback form     |
 | [`gym.astro`](src/pages/demos/gym.astro)               | Cadence Fitness    | Weekly class timetable, today picked out, coaches, free-trial booking |
 
+There is a fourth demo, and it does not live here:
+
+| Sample                                                            | What it shows                                                                  |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| [Halcyon Social Kitchen](https://mosqobadi.github.io/restaurant/) | A working booking system — live availability, table assignment, an admin panel |
+
+Halcyon is a full application in [its own repository](https://github.com/MosQobadi/restaurant),
+published to its own Pages site, and its card is the only one in `workMedia`
+with an external `href`. That is deliberate: the capabilities section above the
+pricing claims web applications, and a claim the reader can click and use is
+worth more than three paragraphs about it. Its staff panel is at
+[`/admin`](https://mosqobadi.github.io/restaurant/admin) with the credentials
+printed on the sign-in screen.
+
 Each demo owns its content in its own frontmatter, so a page can be copied out
 and re-pointed at a real client without untangling it from the rest of the site.
 Each one also carries a sticky banner saying it's a demo — they're labelled as

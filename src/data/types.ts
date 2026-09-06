@@ -10,7 +10,7 @@
  */
 
 /** Stable keys that join a translated string to its shared image/href. */
-export type WorkId = "topoil" | "restaurant" | "plumber" | "gym";
+export type WorkId = "topoil" | "halcyon" | "restaurant" | "plumber" | "gym";
 export type TierId = "starter" | "business" | "pro" | "custom";
 
 export type WorkCopy = {

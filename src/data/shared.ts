@@ -11,6 +11,7 @@ import topoilShot from "~/assets/work/topoil.png";
 import restaurantShot from "~/assets/work/restaurant.png";
 import plumberShot from "~/assets/work/plumber.png";
 import gymShot from "~/assets/work/gym.png";
+import halcyonShot from "~/assets/work/halcyon.png";
 import type { TierId, WorkId } from "./types";
 
 /**
@@ -71,12 +72,24 @@ export const workMedia: Record<WorkId, WorkMedia> = {
     image: topoilShot,
     isDemo: false,
   },
+  /*
+   * The only entry that is not a page on this site. Halcyon is a full
+   * application in its own repository, published to its own Pages site — which
+   * is the point of it being here: the card above this section claims web
+   * applications, and this is the one the reader can click and use.
+   */
+  halcyon: {
+    href: "https://mosqobadi.github.io/restaurant/",
+    image: halcyonShot,
+    isDemo: true,
+  },
   plumber: { href: "/demos/plumber/", image: plumberShot, isDemo: true },
   gym: { href: "/demos/gym/", image: gymShot, isDemo: true },
 };
 
 export const workOrder: readonly WorkId[] = [
   "restaurant",
+  "halcyon",
   "topoil",
   "plumber",
   "gym",

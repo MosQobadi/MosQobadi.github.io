@@ -53,14 +53,14 @@ export const fr: Content = {
     label: "Réalisations choisies",
     heading: "Des sites que vous pouvez ouvrir tout de suite.",
     standfirst:
-      "Un site client en ligne, et trois que j'ai bâtis pour montrer ce que produit chaque forfait. Ils s'ouvrent tous — cliquez partout, essayez-les sur votre téléphone, lisez le code si le cœur vous en dit.",
+      "Un site client en ligne, et quatre que j'ai bâtis moi-même — trois sites web et une véritable application de réservation. Ils s'ouvrent tous : cliquez partout, essayez-les sur votre téléphone, lisez le code si le cœur vous en dit.",
     badgeDemo: "Démo que j'ai bâtie",
     badgeLive: "Site client en ligne",
     openDemo: "Ouvrir la démo",
     visitLive: "Voir le site en ligne",
     disclosureLead: "Soyons clairs :",
     disclosureBody:
-      "les trois démos sont des entreprises que j'ai inventées, bâties pour montrer ce que produit chaque forfait plutôt que pour des clients payants. Top Oil est un vrai site, avec de vrais clients.",
+      "les quatre démos sont des entreprises que j'ai inventées, bâties pour montrer ce que produit chaque forfait plutôt que pour des clients payants. Top Oil est un vrai site, avec de vrais clients.",
     samples: {
       topoil: {
         name: "Top Oil",
@@ -85,6 +85,19 @@ export const fr: Content = {
           "Heures d'ouverture",
           "Carte",
           "Formulaire de réservation",
+        ],
+      },
+      halcyon: {
+        name: "Halcyon Social Kitchen",
+        problem:
+          "La plupart des sites de restaurant sont superbes jusqu'au moment de réserver : on vous donne alors un numéro de téléphone et les heures où quelqu'un y répond. Celui-ci prend la réservation : disponibilités en direct, table attribuée à partir du vrai plan de salle, code d'annulation, et un panneau d'administration d'où l'équipe gère le service.",
+        imageAlt:
+          "Le système de réservation de Halcyon Social Kitchen, montrant la page d'accueil et les tables encore libres ce soir.",
+        features: [
+          "Disponibilités en direct",
+          "Réservation en ligne",
+          "Panneau d'administration",
+          "Gestion du menu",
         ],
       },
       plumber: {
