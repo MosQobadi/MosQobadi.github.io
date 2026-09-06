@@ -92,7 +92,7 @@ export const fr: Content = {
         problem:
           "La plupart des sites de restaurant sont superbes jusqu'au moment de réserver : on vous donne alors un numéro de téléphone et les heures où quelqu'un y répond. Celui-ci prend la réservation : disponibilités en direct, table attribuée à partir du vrai plan de salle, code d'annulation, et un panneau d'administration d'où l'équipe gère le service.",
         imageAlt:
-          "Le système de réservation de Halcyon Social Kitchen, montrant la page d'accueil et les tables encore libres ce soir.",
+          "La page d'accueil de Halcyon Social Kitchen : une photo sombre en bandeau, le nom du restaurant et un bouton Réserver une table.",
         features: [
           "Disponibilités en direct",
           "Réservation en ligne",

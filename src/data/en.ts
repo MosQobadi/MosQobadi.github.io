@@ -90,7 +90,7 @@ export const en: Content = {
         problem:
           "Most restaurant sites are beautiful until you try to book, and then they hand you a phone number and the hours somebody answers it. This one takes the booking: live availability, a table assigned from the real floor plan, a code to cancel with, and an admin panel the floor team runs the service from.",
         imageAlt:
-          "The Halcyon Social Kitchen booking system, showing the home page with tonight's remaining tables listed across it.",
+          "The Halcyon Social Kitchen home page: a dark hero photograph, the restaurant's name, and a Book a table button.",
         features: [
           "Live availability",
           "Online booking",
